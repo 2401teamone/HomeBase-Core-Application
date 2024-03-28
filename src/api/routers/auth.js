@@ -75,9 +75,9 @@ class AuthApi {
         req.body.creator = req.session.user.id;
       }
 
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
       delete req.body.passwordConfirm;
+
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
       let createdUser = await this.app.getDAO().createOne("users", {
         ...req.body,
@@ -137,8 +137,6 @@ class AuthApi {
       });
 
       delete updatedUser.password;
-
-      console.log("User updated :", updatedUser);
 
       const responseData = new ResponseData(req, res, updatedUser);
 

@@ -3,7 +3,6 @@ import catchError from "../../utils/catch_error.js";
 import { systemFields } from "../../utils/constants.js";
 
 const isSystemField = (table, key) => {
-  console.log(table, key, "checking systemfield");
   return systemFields
     .filter((field) => {
       if (field.type === "base") return true;
