@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import fs from "fs";
 import pinoHttp from "pino-http";
 import { resolve } from "path";
 dotenv.config();
