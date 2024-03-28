@@ -14,4 +14,4 @@ app.onGetOneRow("seals").add((event) => {
   console.log("Triggered event: onGetAllRows");
 });
 
-app.start(3005);
+app.start(3000);
