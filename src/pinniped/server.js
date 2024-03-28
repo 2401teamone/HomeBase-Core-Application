@@ -20,10 +20,16 @@ class Server {
 
     this.expressApp = expressApp;
     this.config = config;
+    this.createAltNames();
     this.credentials;
     this.challengeCache = {};
   }
 
+  createAltNames() {
+    if (!this.config.altNames || !this.config.altNames.length) {
+      this.config.altNames.push("www." + this.config.domain);
+    }
+  }
   /**
    * Public method to start the server based on the config object passed in.
    * @returns {undefined}
@@ -249,7 +255,8 @@ class Server {
 
     /* Create CSR */
     const [key, csr] = await crypto.createCsr({
-      commonName: this.config.domain || "jonathanhurd.net",
+      commonName: this.config.domain,
+      altNames: this.config.altNames,
     });
 
     /* Certificate */
