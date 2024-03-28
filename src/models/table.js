@@ -237,8 +237,8 @@ class Table {
     });
 
     const migrateTemplate = `
-      import { MigrationDao } from "pinniped";
-      // import { MigrationDao } from "../../src/pinniped/pinniped.js";
+      // import { MigrationDao } from "pinniped";
+      import { MigrationDao } from "../../src/pinniped/pinniped.js";
 
       export async function up(knex) {
         const dao = new MigrationDao(knex);
@@ -276,8 +276,8 @@ class Table {
     });
 
     const migrateTemplate = `
-        import { MigrationDao } from "pinniped";
-        // import { MigrationDao } from "../../src/pinniped/pinniped.js";
+        // import { MigrationDao } from "pinniped";
+        import { MigrationDao } from "../../src/pinniped/pinniped.js";
 
         export async function up(knex) {
           const dao = new MigrationDao(knex);
@@ -327,8 +327,8 @@ class Table {
     });
 
     const migrateTemplate = `
-    import { MigrationDao } from "pinniped";
-    // import { MigrationDao } from "../../src/pinniped/pinniped.js";
+    // import { MigrationDao } from "pinniped";
+    import { MigrationDao } from "../../src/pinniped/pinniped.js";
 
     export async function up(knex) {
       const oldTable = ${JSON.stringify(this)};
