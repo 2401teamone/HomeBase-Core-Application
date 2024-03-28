@@ -21,7 +21,8 @@ class NumberOptions {
   }
 
   validate(value) {
-    if (typeof value !== "number") return [false, "Value must be a number."];
+    if (typeof value !== "number" && value !== "")
+      return [false, "Value must be a number."];
     if (value < this.min) return [false, "Value is too small."];
     if (value > this.max) return [false, "Value is too large."];
     return [true, ""];
