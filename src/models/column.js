@@ -117,8 +117,6 @@ class JsonOptions {
     } catch (err) {
       return [false, "Value is not a valid JSON."];
     }
-
-    return [true, ""];
   }
 }
 
@@ -131,9 +129,29 @@ class CreatorOptions {
 }
 
 class PasswordOptions {
-  constructor({}) {}
+  constructor({ requiredPattern = "(?=.*d)(?=.*[!@#$%^&*])", minLength = 10 }) {
+    this.requiredPattern = requiredPattern;
+    this.minLength = minLength;
+  }
 
   validate(value) {
+    if (typeof value !== "string") return [false, "Value must be a string."];
+    if (value.length < this.minLength) return [false, "Password is too short."];
+
+    if (!new RegExp(this.requiredPattern).test(value))
+      return [false, `Password must match: ${this.requiredPattern}`];
+    return [true, ""];
+  }
+}
+
+class UsernameOptions {
+  constructor({ minLength = 4 }) {
+    this.minLength = minLength;
+  }
+
+  validate(value) {
+    if (typeof value !== "string") return [false, "Value must be a string."];
+    if (value.length < this.minLength) return [false, "Username is too short."];
     return [true, ""];
   }
 }
@@ -194,6 +212,11 @@ class Column {
       options: PasswordOptions,
       isJson: false,
     },
+    username: {
+      sql: "TEXT DEFAULT '' NOT NULL",
+      options: UsernameOptions,
+      isJson: false,
+    },
   };
 
   static isValidType(type) {
@@ -206,8 +229,8 @@ class Column {
     name,
     type,
     required = 0,
-    editable = 1,
     unique = 0,
+    show = 1,
     options = {},
   }) {
     this.id = id;
@@ -215,8 +238,8 @@ class Column {
     this.name = name;
     this.type = type;
     this.required = required;
-    this.editable = editable;
     this.unique = unique;
+    this.show = show;
     this.options = new Column.COLUMN_MAP[type].options(options);
   }
 

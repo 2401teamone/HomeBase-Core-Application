@@ -1,10 +1,23 @@
 import bcrypt from "bcrypt";
 import { Router } from "express";
 import catchError from "../../utils/catch_error.js";
-import { AuthenticationError } from "../../utils/errors.js";
+import {
+  AuthenticationError,
+  UnauthenticatedError,
+} from "../../utils/errors.js";
 import generateUuid from "../../utils/generate_uuid.js";
 import ResponseData from "../../models/response_data.js";
-import validateRegistration from "../middleware/validate_registration.js";
+import parseJsonColumns from "../../utils/parse_json_columns.js";
+
+import loadUsersTableContext from "../middleware/load_users_table_context.js";
+
+import { validateUser } from "../middleware/validate_user.js";
+
+import {
+  validatePostMeetsRequiredFields,
+  validateRequestMeetsCustomValidation,
+  validateRequestMeetsUniqueValidation,
+} from "../middleware/validate_record.js";
 
 /**
  * Creates an Express Router object
@@ -20,7 +33,11 @@ export default function generateAuthRouter(app) {
   router.get("/", catchError(authApi.getUserHandler()));
   router.post(
     "/register",
-    validateRegistration(app),
+    loadUsersTableContext(app),
+    validateUser(app),
+    // validatePostMeetsRequiredFields(),
+    // validateRequestMeetsCustomValidation(),
+    // validateRequestMeetsUniqueValidation(app),
     catchError(authApi.registerHandler())
   );
   router.post("/login", catchError(authApi.loginHandler()));
@@ -51,27 +68,34 @@ class AuthApi {
    */
   registerHandler() {
     return async (req, res, next) => {
-      const { username, password } = req.body;
+      const { table } = res.locals;
 
-      // Hashes the inputted password and inserts this user's credentials into the 'users' table.
-      const hashedPassword = await bcrypt.hash(password, 10);
+      if (table.createRule === "creator" && req.session.user) {
+        req.body.creator = req.session.user.id;
+      }
+
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+      if (req.body.passwordConfirm) {
+        delete req.body.passwordConfirm;
+      }
 
       let createdUser = await this.app.getDAO().createOne("users", {
+        ...req.body,
         id: generateUuid(),
-        username,
         password: hashedPassword,
         role: "user",
       });
 
       createdUser = createdUser[0];
 
+      parseJsonColumns(table, [createdUser]);
+
       delete createdUser.password;
 
       console.log("User created :", createdUser);
 
-      const responseData = new ResponseData(req, res, {
-        ...createdUser,
-      });
+      const responseData = new ResponseData(req, res, createdUser);
 
       await this.app.onRegisterUser().trigger(responseData);
       if (responseData.responseSent()) return null;

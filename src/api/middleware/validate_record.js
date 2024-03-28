@@ -48,7 +48,7 @@ export const validatePatchMeetsRequiredFields = () => {
     for (let key in req.body) {
       let val = req.body[key];
       let column = table.getColumnByName(key);
-      if (column.required && handleRequiredField(column.type, val)) {
+      if (column?.required && handleRequiredField(column.type, val)) {
         throw new BadRequestError(`Column ${key} is required.`);
       }
     }
@@ -60,7 +60,6 @@ export const validatePatchMeetsRequiredFields = () => {
 export const validateRequestMeetsCustomValidation = () => {
   return catchError((req, res, next) => {
     const { table } = res.locals;
-
     for (let key in req.body) {
       let column = table.getColumnByName(key);
       if (!column)
