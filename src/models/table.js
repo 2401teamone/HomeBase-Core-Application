@@ -35,14 +35,17 @@ class Table {
   constructor({
     id = generateUuid(),
     name = "",
+    type = "base",
     columns = [],
     getAllRule = Table.DEFAULT_RULE,
     getOneRule = Table.DEFAULT_RULE,
     createRule = Table.DEFAULT_RULE,
     updateRule = Table.DEFAULT_RULE,
     deleteRule = Table.DEFAULT_RULE,
+    options = {},
   }) {
     this.id = id;
+    this.type = type;
     this.name = name;
     if (typeof columns === "string") {
       columns = JSON.parse(columns);
@@ -53,6 +56,11 @@ class Table {
     this.createRule = createRule;
     this.deleteRule = deleteRule;
     this.updateRule = updateRule;
+
+    if (typeof options === "string") {
+      options = JSON.parse(options);
+    }
+    this.options = options;
 
     this.validate();
   }
@@ -65,8 +73,10 @@ class Table {
 
     if (!this.id) throw new BadRequestError("Table doesn't have a valid ID.");
     if (!this.name) throw new BadRequestError("The table must have a name.");
-    if (this.columns.length === 0) {
-      throw new BadRequestError("The table must have at least one column.");
+    if (this.type === "base") {
+      if (this.columns.length === 0) {
+        throw new BadRequestError("The table must have at least one column.");
+      }
     }
     if (!this.columns.every((column) => column.id)) {
       throw new BadRequestError("Columns must have IDs.");
@@ -190,6 +200,10 @@ class Table {
     return JSON.stringify(this.getColumns());
   }
 
+  stringifyOptions() {
+    return JSON.stringify(this.options);
+  }
+
   getColumnById(id) {
     let foundColumn = this.columns.find((column) => column.id === id);
     if (!foundColumn) return null;
@@ -242,11 +256,12 @@ class Table {
 
     const db = Table.getNewConnection();
     let filePath = await db.migrate.make(`create_table_${this.name}`);
-
+    console.log(this, JSON.stringify(this));
     const stringTable = JSON.stringify(this);
     const stringTableMetaRow = JSON.stringify({
       ...this,
       columns: this.stringifyColumns(),
+      options: this.stringifyOptions(),
     });
 
     const migrateTemplate = `
@@ -285,6 +300,7 @@ class Table {
     const stringTableMetaRow = JSON.stringify({
       ...this,
       columns: this.stringifyColumns(),
+      options: this.stringifyOptions(),
     });
 
     const migrateTemplate = `
@@ -331,10 +347,12 @@ class Table {
     const newStringTableMetaRow = JSON.stringify({
       ...newTable,
       columns: newTable.stringifyColumns(),
+      options: newTable.stringifyOptions(),
     });
     const oldStringTableMetaRow = JSON.stringify({
       ...this,
       columns: this.stringifyColumns(),
+      options: this.stringifyOptions(),
     });
 
     const migrateTemplate = `

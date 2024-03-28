@@ -8,7 +8,14 @@ import {
 } from "../../utils/errors.js";
 import generateUuid from "../../utils/generate_uuid.js";
 import ResponseData from "../../models/response_data.js";
-import validateRegistration from "../middleware/validate_registration.js";
+import parseJsonColumns from "../../utils/parse_json_columns.js";
+import { validateUser } from "../middleware/validate_user.js";
+import {
+  validatePostMeetsRequiredFields,
+  validateRequestMeetsCustomValidation,
+  validateRequestMeetsUniqueValidation,
+} from "../middleware/validate_record.js";
+import loadUsersTableContext from "../middleware/load_users_table_context.js";
 
 /**
  * Creates an Express Router object
@@ -24,9 +31,20 @@ export default function generateAuthRouter(app) {
   router.get("/", catchError(authApi.getUserHandler()));
   router.post(
     "/register",
-    validateRegistration(app),
+    loadUsersTableContext(app),
+    validateUser(app),
+    validatePostMeetsRequiredFields(),
+    validateRequestMeetsCustomValidation(),
+    validateRequestMeetsUniqueValidation(app),
     catchError(authApi.registerHandler())
   );
+  router.patch(
+    "/:id/username",
+    loadUsersTableContext(app),
+    validateUser(app),
+    catchError(authApi.updateUsername())
+  );
+  router.patch("/:id/password", catchError(authApi.updatePasswordHandler()));
   router.post("/login", catchError(authApi.loginHandler()));
   router.post("/admin/register", catchError(authApi.registerAdminHandler()));
   router.post("/admin/login", catchError(authApi.loginAdminHandler()));
@@ -55,14 +73,19 @@ class AuthApi {
    */
   registerHandler() {
     return async (req, res, next) => {
-      const { username, password } = req.body;
+      const { table } = res.locals;
 
-      // Hashes the inputted password and inserts this user's credentials into the 'users' table.
-      const hashedPassword = await bcrypt.hash(password, 10);
+      if (table.createRule === "creator" && req.session.user) {
+        req.body.creator = req.session.user.id;
+      }
+
+      delete req.body.passwordConfirm;
+
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
       let createdUser = await this.app.getDAO().createOne("users", {
+        ...req.body,
         id: generateUuid(),
-        username,
         password: hashedPassword,
         role: "user",
       });
@@ -70,17 +93,60 @@ class AuthApi {
       createdUser = createdUser[0];
 
       delete createdUser.password;
+      parseJsonColumns(table, [createdUser]);
 
       console.log("User created :", createdUser);
 
-      const responseData = new ResponseData(req, res, {
-        ...createdUser,
-      });
+      const responseData = new ResponseData(req, res, createdUser);
 
       await this.app.onRegisterUser().trigger(responseData);
       if (responseData.responseSent()) return null;
 
       res.status(201).json(responseData.formatGeneralResponse());
+    };
+  }
+
+  updateUsername() {
+    return async (req, res, next) => {
+      const { table } = res.locals;
+      const { id } = req.params;
+      const { username } = req.body;
+
+      let updatedUser = await this.app.getDAO().updateOne("users", id, {
+        username,
+      });
+
+      updatedUser = updatedUser[0];
+
+      delete updatedUser.password;
+      parseJsonColumns(table, [updatedUser]);
+
+      const responseData = new ResponseData(req, res, updatedUser);
+
+      if (responseData.responseSent()) return null;
+
+      res.status(200).json(responseData.formatGeneralResponse());
+    };
+  }
+
+  updatePasswordHandler() {
+    return async (req, res, next) => {
+      const { id } = req.params;
+      const { password } = req.body;
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const updatedUser = await this.app.getDAO().updateOne("users", id, {
+        password: hashedPassword,
+      });
+
+      delete updatedUser.password;
+
+      const responseData = new ResponseData(req, res, updatedUser);
+
+      if (responseData.responseSent()) return null;
+
+      res.status(200).json(responseData.formatGeneralResponse());
     };
   }
 
