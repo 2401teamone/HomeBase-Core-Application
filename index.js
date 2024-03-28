@@ -1,6 +1,12 @@
 import { pnpd } from "./src/pinniped/pinniped.js";
 
-const app = pnpd();
+let serverConfig = {
+  // domain: "jonathanhurd.net",
+  port: 3000,
+  // cors:
+};
+
+const app = pnpd(serverConfig);
 
 // Extensibility Invocations
 
@@ -14,4 +20,4 @@ app.onGetOneRow("seals").add((event) => {
   console.log("Triggered event: onGetAllRows");
 });
 
-app.start(3000);
+app.start();
