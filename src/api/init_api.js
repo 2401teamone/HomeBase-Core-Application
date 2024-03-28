@@ -48,7 +48,7 @@ function initApi(app) {
   server.use("/api/admin", adminRouter);
   server.use("/", customRouter);
 
-  // routes all of the front end routes back to index. Needed for static vite build
+  // Routes all of the front end routes back to index. Needed for static vite build
   server.get(
     ["/_/login", "/_/register", "/_/observability", "/_/data", "/_/settings"],
     (req, res, next) => {
@@ -56,10 +56,13 @@ function initApi(app) {
     }
   );
 
-  server.use("/", express.static("dist"));
-  server.get("/*", (req, res, next) => {
-    res.sendFile(resolve("dist/index.html"));
-  });
+  // If serving a frontend application, serve it at the "/" path
+  if (fs.existsSync("../../dist")) {
+    server.use("/", express.static("dist"));
+    server.get("/*", (req, res, next) => {
+      res.sendFile(resolve("dist/index.html"));
+    });
+  }
 
   server.get("*", (req, res, next) => {
     res.send("Page does not exist");
