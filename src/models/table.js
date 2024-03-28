@@ -243,7 +243,7 @@ class Table {
 
     const db = Table.getNewConnection();
     let filePath = await db.migrate.make(`create_table_${this.name}`);
-    console.log(this, JSON.stringify(this), "HEREEEE");
+    console.log(this, JSON.stringify(this));
     const stringTable = JSON.stringify(this);
     const stringTableMetaRow = JSON.stringify({
       ...this,
