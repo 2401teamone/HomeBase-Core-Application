@@ -6,4 +6,5 @@ export const systemFields = [
   { field: "username", type: "auth" },
   { field: "password", type: "auth" },
   { field: "role", type: "auth" },
+  { field: "passwordConfirm", type: "auth" },
 ];

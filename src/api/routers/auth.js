@@ -1,23 +1,17 @@
 import bcrypt from "bcrypt";
 import { Router } from "express";
 import catchError from "../../utils/catch_error.js";
-import {
-  AuthenticationError,
-  UnauthenticatedError,
-} from "../../utils/errors.js";
+import { AuthenticationError } from "../../utils/errors.js";
 import generateUuid from "../../utils/generate_uuid.js";
 import ResponseData from "../../models/response_data.js";
 import parseJsonColumns from "../../utils/parse_json_columns.js";
-
-import loadUsersTableContext from "../middleware/load_users_table_context.js";
-
 import { validateUser } from "../middleware/validate_user.js";
-
 import {
   validatePostMeetsRequiredFields,
   validateRequestMeetsCustomValidation,
   validateRequestMeetsUniqueValidation,
 } from "../middleware/validate_record.js";
+import loadUsersTableContext from "../middleware/load_users_table_context.js";
 
 /**
  * Creates an Express Router object
@@ -35,11 +29,18 @@ export default function generateAuthRouter(app) {
     "/register",
     loadUsersTableContext(app),
     validateUser(app),
-    // validatePostMeetsRequiredFields(),
-    // validateRequestMeetsCustomValidation(),
-    // validateRequestMeetsUniqueValidation(app),
+    validatePostMeetsRequiredFields(),
+    validateRequestMeetsCustomValidation(),
+    validateRequestMeetsUniqueValidation(app),
     catchError(authApi.registerHandler())
   );
+  router.patch(
+    "/:id/username",
+    loadUsersTableContext(app),
+    validateUser(app),
+    catchError(authApi.updateUsername())
+  );
+  router.patch("/:id/password", catchError(authApi.updatePasswordHandler()));
   router.post("/login", catchError(authApi.loginHandler()));
   router.post("/admin/register", catchError(authApi.registerAdminHandler()));
   router.post("/admin/login", catchError(authApi.loginAdminHandler()));
@@ -76,9 +77,7 @@ class AuthApi {
 
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-      if (req.body.passwordConfirm) {
-        delete req.body.passwordConfirm;
-      }
+      delete req.body.passwordConfirm;
 
       let createdUser = await this.app.getDAO().createOne("users", {
         ...req.body,
@@ -89,9 +88,8 @@ class AuthApi {
 
       createdUser = createdUser[0];
 
-      parseJsonColumns(table, [createdUser]);
-
       delete createdUser.password;
+      parseJsonColumns(table, [createdUser]);
 
       console.log("User created :", createdUser);
 
@@ -101,6 +99,52 @@ class AuthApi {
       if (responseData.responseSent()) return null;
 
       res.status(201).json(responseData.formatGeneralResponse());
+    };
+  }
+
+  updateUsername() {
+    return async (req, res, next) => {
+      const { table } = res.locals;
+      const { id } = req.params;
+      const { username } = req.body;
+
+      let updatedUser = await this.app.getDAO().updateOne("users", id, {
+        username,
+      });
+
+      updatedUser = updatedUser[0];
+
+      delete updatedUser.password;
+      parseJsonColumns(table, [updatedUser]);
+
+      const responseData = new ResponseData(req, res, updatedUser);
+
+      if (responseData.responseSent()) return null;
+
+      res.status(200).json(responseData.formatGeneralResponse());
+    };
+  }
+
+  updatePasswordHandler() {
+    return async (req, res, next) => {
+      const { id } = req.params;
+      const { password } = req.body;
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const updatedUser = await this.app.getDAO().updateOne("users", id, {
+        password: hashedPassword,
+      });
+
+      delete updatedUser.password;
+
+      console.log("User updated :", updatedUser);
+
+      const responseData = new ResponseData(req, res, updatedUser);
+
+      if (responseData.responseSent()) return null;
+
+      res.status(200).json(responseData.formatGeneralResponse());
     };
   }
 

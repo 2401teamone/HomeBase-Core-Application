@@ -1,5 +1,17 @@
 import { BadRequestError } from "../../utils/errors.js";
 import catchError from "../../utils/catch_error.js";
+import { systemFields } from "../../utils/constants.js";
+
+const isSystemField = (table, key) => {
+  console.log(table, key, "checking systemfield");
+  return systemFields
+    .filter((field) => {
+      if (field.type === "base") return true;
+      if (field.type === "auth" && table.type === "auth") return true;
+    })
+    .map((field) => field.field)
+    .includes(key);
+};
 
 export const validateRequestMeetsUniqueValidation = (app) => {
   return catchError(async (req, res, next) => {
@@ -7,6 +19,7 @@ export const validateRequestMeetsUniqueValidation = (app) => {
     const { rowId } = req.params;
 
     for (let key in req.body) {
+      if (isSystemField(table, key)) continue;
       let column = table.getColumnByName(key);
       if (!column)
         throw new BadRequestError("Column does not exist in the schema.");
@@ -46,6 +59,7 @@ export const validatePatchMeetsRequiredFields = () => {
     const { table } = res.locals;
 
     for (let key in req.body) {
+      if (isSystemField(table, key)) continue;
       let val = req.body[key];
       let column = table.getColumnByName(key);
       if (column?.required && handleRequiredField(column.type, val)) {
@@ -61,6 +75,8 @@ export const validateRequestMeetsCustomValidation = () => {
   return catchError((req, res, next) => {
     const { table } = res.locals;
     for (let key in req.body) {
+      if (isSystemField(table, key)) continue;
+      console.log(key, "made it through");
       let column = table.getColumnByName(key);
       if (!column)
         throw new BadRequestError("Column does not exist in the schema.");
