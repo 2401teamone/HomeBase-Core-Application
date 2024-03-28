@@ -1,7 +1,11 @@
 import bcrypt from "bcrypt";
 import { Router } from "express";
 import catchError from "../../utils/catch_error.js";
-import { AuthenticationError } from "../../utils/errors.js";
+import {
+  AuthenticationError,
+  UnauthenticatedError,
+  ForbiddenError,
+} from "../../utils/errors.js";
 import generateUuid from "../../utils/generate_uuid.js";
 import ResponseData from "../../models/response_data.js";
 import parseJsonColumns from "../../utils/parse_json_columns.js";
@@ -154,6 +158,16 @@ class AuthApi {
   registerAdminHandler() {
     return async (req, res, next) => {
       const { username, password } = req.body;
+
+      // Check if there are any admins registered
+      const allAdmins = await this.app.getDAO().getAll("admins");
+
+      if (allAdmins.length) {
+        // if there ARE, then if user is not signed in , unauthenticated error
+        if (!req.session.user) throw new UnauthenticatedError();
+        // if there are and user is signed in but is not an admin, forbidden error
+        if (req.session.user.role !== "admin") throw new ForbiddenError();
+      }
 
       // Checks if 'username' exists in 'users'.
       const existingAdmin = await this.app

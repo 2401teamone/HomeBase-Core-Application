@@ -15,7 +15,7 @@ content-type : application/json
 
 {
   "username": "bilbo",
-  "password": "password"
+  "password": "passwordpassword1!"
 }
 
 ### Login as user
@@ -24,7 +24,7 @@ content-type : application/json
 
 {
   "username": "bilbo",
-  "password": "password"
+  "password": "passwordpassword1!"
 }
 
 ### Attempts to logout of current user
@@ -35,7 +35,7 @@ POST http://localhost:3000/api/auth/admin/register
 content-type : application/json
 
 {
-  "username": "admin",
+  "username": "admin2",
   "password": "password"
 }
 
