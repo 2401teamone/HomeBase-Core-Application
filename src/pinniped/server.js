@@ -27,9 +27,11 @@ class Server {
 
   createAltNames() {
     if (!this.config.altNames || !this.config.altNames.length) {
+      this.config.altNames = [];
       this.config.altNames.push("www." + this.config.domain);
     }
   }
+
   /**
    * Public method to start the server based on the config object passed in.
    * @returns {undefined}
