@@ -19,6 +19,19 @@ class Table {
     return new DAO().getDB();
   }
 
+  static getImportString() {
+    // If running in dev, reference src folder for migration imports
+    let importString = "../../src/pinniped/pinniped.js";
+
+    const currentFilePath = import.meta.url;
+    const runningIn = currentFilePath.split("/").reverse()[3];
+
+    // If running as intended inside of a node_modules folder, reference pinniped module
+    if (runningIn === "pinniped") importString = "pinniped";
+
+    return importString;
+  }
+
   constructor({
     id = generateUuid(),
     name = "",
@@ -237,8 +250,7 @@ class Table {
     });
 
     const migrateTemplate = `
-      // import { MigrationDao } from "pinniped";
-      import { MigrationDao } from "../../src/pinniped/pinniped.js";
+      import { MigrationDao } from "${Table.getImportString()}";
 
       export async function up(knex) {
         const dao = new MigrationDao(knex);
@@ -276,8 +288,7 @@ class Table {
     });
 
     const migrateTemplate = `
-        // import { MigrationDao } from "pinniped";
-        import { MigrationDao } from "../../src/pinniped/pinniped.js";
+        import { MigrationDao } from "${Table.getImportString()}";
 
         export async function up(knex) {
           const dao = new MigrationDao(knex);
@@ -327,8 +338,7 @@ class Table {
     });
 
     const migrateTemplate = `
-    // import { MigrationDao } from "pinniped";
-    import { MigrationDao } from "../../src/pinniped/pinniped.js";
+    import { MigrationDao } from "${Table.getImportString()}";
 
     export async function up(knex) {
       const oldTable = ${JSON.stringify(this)};
