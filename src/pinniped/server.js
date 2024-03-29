@@ -230,8 +230,11 @@ class Server {
    * @returns {bool}
    */
   #needsRenewal(cert) {
-    const certObj = forge.pki.certificateFromPem(cert);
-    return this.#daysUntil(certObj.validity.notAfter) < 31;
+    const certObj = acme.crypto.readCertificateInfo(cert);
+    // const certObj = forge.pki.certificateFromPem(cert);
+    console.log(certObj);
+    // return this.#daysUntil(certObj.validity.notAfter) < 31;
+    return false;
   }
 
   /**
@@ -342,7 +345,7 @@ class Server {
    * @returns {Promise}
    */
 
-  async #challengeRemoveFn(authz, challenge, keyAuthorization) {
+  async #challengeRemoveFn(authz, challenge) {
     console.log("Cleaning up challenge");
 
     /* http-01 */
