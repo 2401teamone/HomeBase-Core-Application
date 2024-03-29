@@ -8,7 +8,6 @@ import {
 import { createServer } from "https";
 import express from "express";
 import { Client, directory, crypto } from "acme-client";
-import forge from "node-forge";
 import { RecurrenceRule, scheduleJob } from "node-schedule";
 
 class Server {
@@ -230,11 +229,8 @@ class Server {
    * @returns {bool}
    */
   #needsRenewal(cert) {
-    const certObj = acme.crypto.readCertificateInfo(cert);
-    // const certObj = forge.pki.certificateFromPem(cert);
-    console.log(certObj);
-    // return this.#daysUntil(certObj.validity.notAfter) < 31;
-    return false;
+    const certObj = crypto.readCertificateInfo(cert);
+    return this.#daysUntil(certObj.notAfter) < 31;
   }
 
   /**
