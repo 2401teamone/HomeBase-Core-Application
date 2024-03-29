@@ -11,7 +11,16 @@ import { Client, directory, crypto } from "acme-client";
 import { RecurrenceRule, scheduleJob } from "node-schedule";
 
 class Server {
-  constructor(expressApp, config) {
+  /**
+   * @param {Object} expressApp
+   * @param {Object} config - server config object
+   * @param {string} [config.domain] - domain name to be used on certificate
+   * @param {string[]} [config.altNames] - alternate names to be used on cert (www.domain.com, www.sub.domain.com, etc)
+   * @param {number} [config.port] - default 3000, only used for http server. https runs on 80 and 443 only
+   * @returns {undefined}
+   */
+
+  constructor(expressApp, config = {}) {
     this.certServer = this.#createCertServer();
     this.httpsServer;
     this.httpServer;
@@ -355,11 +364,3 @@ class Server {
 }
 
 export default Server;
-// const app = express();
-
-// app.get("/", (req, res) => {
-//   res.send("Hi, this is seal!");
-// });
-
-// let server = new Server(this.expressApp, this.config);
-// server.start();
