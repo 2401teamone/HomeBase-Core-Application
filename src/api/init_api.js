@@ -58,7 +58,7 @@ function initApi(app) {
   );
 
   // If serving a frontend application, serve it at the "/" path
-  if (fs.existsSync("../../dist")) {
+  if (fs.existsSync("dist")) {
     server.use("/", express.static("dist"));
     server.get("/*", (req, res, next) => {
       res.sendFile(resolve("dist/index.html"));
