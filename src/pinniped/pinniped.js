@@ -46,30 +46,13 @@ class Pinniped {
       if (!usersExists) {
         const users = new Table({
           name: "users",
-          columns: [
-            {
-              name: "username",
-              type: "text",
-              system: true,
-              editable: true,
-              required: true,
-              unique: true,
-            },
-            {
-              name: "password",
-              type: "password",
-              system: true,
-              editable: false,
-              required: true,
-            },
-            {
-              name: "role",
-              type: "text",
-              system: true,
-              editable: false,
-              required: true,
-            },
-          ],
+          type: "auth",
+          options: {
+            minUsernameLength: 4,
+            minPasswordLength: 8,
+            pattern:
+              "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$",
+          },
         });
         await users.create();
       }
@@ -77,29 +60,7 @@ class Pinniped {
       if (!adminsExists) {
         const admins = new Table({
           name: "admins",
-          columns: [
-            {
-              name: "username",
-              type: "text",
-              system: true,
-              editable: false,
-              required: true,
-            },
-            {
-              name: "password",
-              type: "password",
-              system: true,
-              editable: false,
-              required: true,
-            },
-            {
-              name: "role",
-              type: "text",
-              system: true,
-              editable: false,
-              required: true,
-            },
-          ],
+          type: "auth",
         });
         await admins.create();
       }

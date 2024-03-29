@@ -286,12 +286,14 @@ class DAO {
     await this.getDB().schema.createTable("tablemeta", function (table) {
       table.text("id").primary();
       table.text("name").unique().notNullable();
+      table.text("type").notNullable();
       table.text("columns").notNullable();
       table.text("getAllRule").defaultTo("admin");
       table.text("getOneRule").defaultTo("admin");
       table.text("createRule").defaultTo("admin");
       table.text("updateRule").defaultTo("admin");
       table.text("deleteRule").defaultTo("admin");
+      table.text("options").defaultTo("{}");
     });
   }
 
@@ -340,6 +342,7 @@ class DAO {
   async createTable(table) {
     const name = table.name;
     const columns = table.columns;
+    const type = table.type;
 
     return await this.getDB().schema.createTable(name, (table) => {
       table.specificType(
@@ -348,6 +351,12 @@ class DAO {
       );
       table.specificType("created_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
       table.specificType("updated_at", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
+
+      if (type === "auth") {
+        table.specificType("username", "TEXT NOT NULL");
+        table.specificType("password", "TEXT NOT NULL");
+        table.specificType("role", "TEXT DEFAULT ''");
+      }
 
       columns.forEach((column) => {
         this._addColumnPerSpecs(column, table);
