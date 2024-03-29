@@ -42,7 +42,7 @@ function initApi(app) {
   server.use(pinoHttp({ stream: app.logger.sqliteStream() }));
   server.use(sanitize());
 
-  server.use(helmet({ contentSecurityPolicy: false }));
+  server.use(helmet());
 
   const authRouter = generateAuthRouter(app);
   const crudRouter = generateCrudRouter(app);
