@@ -27,15 +27,21 @@ class Server {
     this.httpRedirectServer;
 
     this.expressApp = expressApp;
-    this.config = config;
+    this.config = {
+      altNames: config.altNames || [],
+      port: config.port || 3000,
+      domain: config.domain,
+      cors: config.cors || [],
+    };
+
     this.createAltNames();
+    console.log(this.config);
     this.credentials;
     this.challengeCache = {};
   }
 
   createAltNames() {
-    if (!this.config.altNames || !this.config.altNames.length) {
-      this.config.altNames = [];
+    if (this.config.domain && !this.config.altNames.length) {
       this.config.altNames.push("www." + this.config.domain);
     }
   }
@@ -113,7 +119,7 @@ class Server {
   #createHttpServer() {
     let httpServer = {};
     const app = this.expressApp;
-    const port = this.config.port || 3000;
+    const port = this.config.port;
 
     httpServer.start = () => {
       httpServer.server = app.listen(port, () => {
