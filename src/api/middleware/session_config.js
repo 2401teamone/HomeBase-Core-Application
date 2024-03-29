@@ -30,7 +30,7 @@ export default function sessionConfig() {
     resave: false,
     saveUninitialized: true,
     cookie: {
-      maxAge: 60 * 60 * 1000, // 1 hour
+      maxAge: 60 * 60 * 3000, // 3 hour
       httpOnly: true,
       secure: false,
     },
