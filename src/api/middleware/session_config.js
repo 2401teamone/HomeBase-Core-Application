@@ -1,4 +1,3 @@
-//Session
 import session from "express-session";
 import store from "better-sqlite3-session-store";
 import sqlite from "better-sqlite3";

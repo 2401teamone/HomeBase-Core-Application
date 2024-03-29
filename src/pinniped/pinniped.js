@@ -6,6 +6,7 @@ import registerProcessListeners from "../utils/register_process_listeners.js";
 import { InvalidCustomRouteError } from "../utils/errors.js";
 import Table from "../models/table.js";
 import PinnipedEvent from "../models/pnpd_event.js";
+import Server from "./server.js";
 
 /**
  * Pinniped Class
@@ -18,6 +19,7 @@ class Pinniped {
   }
 
   constructor(config) {
+    this.config = config;
     this.DAO = new DAO();
     this.logger = new LogDao();
     this.emitter = new EventEmitter();
@@ -121,16 +123,13 @@ class Pinniped {
    * Starts the server on the given port, and registers process event handlers.
    * @param {number} port
    */
-  start(port) {
+  start() {
     registerProcessListeners(this);
 
-    const server = initApi(this);
+    const expressApp = initApi(this);
 
-    server.listen(port, () => {
-      console.log(`\nServer started at: http://localhost:${port}`);
-      console.log(`├─ REST API: http://localhost:${port}/api`);
-      console.log(`└─ Admin UI: http://localhost:${port}/_/\n`);
-    });
+    const server = new Server(expressApp, this.config);
+    server.start();
   }
 
   /**

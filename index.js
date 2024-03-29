@@ -1,6 +1,15 @@
 import { pnpd } from "./src/pinniped/pinniped.js";
+import "dotenv/config";
 
-const app = pnpd();
+// see .env.template for comments on config properties
+let serverConfig = {
+  domain: process.env.SERVER_DOMAIN,
+  altNames: process.env.SERVER_ALTNAMES,
+  directory: process.env.SERVER_DIRECTORY,
+  port: process.env.SERVER_PORT,
+};
+
+const app = pnpd(serverConfig);
 
 // Extensibility Invocations
 
@@ -14,4 +23,4 @@ app.onGetOneRow("seals").add((event) => {
   console.log("Triggered event: onGetAllRows");
 });
 
-app.start(3000);
+app.start();

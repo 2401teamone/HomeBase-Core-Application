@@ -1,9 +1,8 @@
 import express from "express";
-import dotenv from "dotenv";
+import "dotenv/config";
 import fs from "fs";
 import pinoHttp from "pino-http";
 import { resolve } from "path";
-dotenv.config();
 
 //Routers
 import generateCrudRouter from "./routers/crud.js";
@@ -22,15 +21,22 @@ import sessionConfig from "./middleware/session_config.js";
 function initApi(app) {
   const server = express();
 
-  server.use("/_", express.static("node_modules/pinniped/ui"));
+  let origin = true;
+  if (process.env.CORS_WHITELIST) {
+    origin = process.env.CORS_WHITELIST.split(",");
+  }
 
-  server.use(express.json());
   server.use(
     cors({
-      origin: true,
+      origin,
       credentials: true,
     })
   );
+
+  server.use("/_", express.static("node_modules/pinniped/ui"));
+
+  server.use(express.json());
+
   server.use(sessionConfig());
 
   server.use(pinoHttp({ stream: app.logger.sqliteStream() }));
