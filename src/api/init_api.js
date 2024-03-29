@@ -35,7 +35,8 @@ function initApi(app) {
 
   server.use(pinoHttp({ stream: app.logger.sqliteStream() }));
   server.use(sanitize());
-  server.use(helmet());
+
+  server.use(helmet({ contentSecurityPolicy: false }));
 
   const authRouter = generateAuthRouter(app);
   const crudRouter = generateCrudRouter(app);
@@ -58,7 +59,7 @@ function initApi(app) {
   );
 
   // If serving a frontend application, serve it at the "/" path
-  if (fs.existsSync("../../dist")) {
+  if (fs.existsSync("dist")) {
     server.use("/", express.static("dist"));
     server.get("/*", (req, res, next) => {
       res.sendFile(resolve("dist/index.html"));

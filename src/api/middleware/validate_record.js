@@ -75,7 +75,6 @@ export const validateRequestMeetsCustomValidation = () => {
     const { table } = res.locals;
     for (let key in req.body) {
       if (isSystemField(table, key)) continue;
-      console.log(key, "made it through");
       let column = table.getColumnByName(key);
       if (!column)
         throw new BadRequestError("Column does not exist in the schema.");

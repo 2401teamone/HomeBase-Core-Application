@@ -3,7 +3,6 @@ import Column from "../models/column.js";
 import { systemFields } from "./constants.js";
 
 export default function parseJsonColumns(table, rows) {
-  console.log(rows, table, "ROWS");
   for (let row of rows) {
     for (let key in row) {
       if (
@@ -19,7 +18,6 @@ export default function parseJsonColumns(table, rows) {
       }
 
       const column = table.getColumnByName(key);
-      console.log(column, key, "COLUMN", "made it here");
       const columnType = column?.type;
       const isStringifiedJson = Column.COLUMN_MAP[columnType].isJson;
       if (isStringifiedJson) {
