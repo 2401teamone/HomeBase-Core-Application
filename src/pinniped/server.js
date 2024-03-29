@@ -189,7 +189,6 @@ class Server {
       });
     };
     redirectServer.stop = async () => {
-      console.log("Closing redirect server");
       await redirectServer.server.close();
     };
 
@@ -253,12 +252,13 @@ class Server {
    * @returns {undefined}
    */
   async #getCert() {
+    console.log("Attempting to obtain certificate from Let's Encrypt...");
     if (this.httpRedirectServer) {
       await this.httpRedirectServer.stop();
     }
     this.certServer.start();
 
-    /* Init client */
+    // Init client
     const client = new Client({
       // uncomment this for production
       // directoryUrl: directory.letsencrypt.production,
@@ -266,13 +266,13 @@ class Server {
       accountKey: await crypto.createPrivateKey(),
     });
 
-    /* Create CSR */
+    // Create CSR
     const [key, csr] = await crypto.createCsr({
       commonName: this.config.domain,
       altNames: this.config.altNames,
     });
 
-    /* Certificate */
+    // Certificate
     const cert = await client.auto({
       csr,
       termsOfServiceAgreed: true,
@@ -280,7 +280,7 @@ class Server {
       challengeRemoveFn: this.#challengeRemoveFn.bind(this),
     });
 
-    console.log("Obtained new certificate from Let's Encrypt");
+    console.log("Obtained certificate from Let's Encrypt!");
     if (!existsSync("pnpd_data/.cert")) {
       mkdirSync("pnpd_data/.cert", { recursive: true });
     }
@@ -303,6 +303,7 @@ class Server {
    *
    * @returns {object} http.Server
    */
+
   #createCertServer() {
     let certServer = {};
     const certApp = express();
@@ -317,7 +318,6 @@ class Server {
       });
     };
     certServer.stop = async () => {
-      console.log("Closing certificate challenge server");
       await certServer.server.close();
     };
 
@@ -335,9 +335,8 @@ class Server {
    */
 
   async #challengeCreateFn(authz, challenge, keyAuthorization) {
-    console.log("Challenge recieved from Let's Encrypt");
-
-    /* http-01 */
+    console.log("Challenge received from Let's Encrypt");
+    // http-01
     if (challenge.type === "http-01") {
       this.challengeCache[challenge.token] = keyAuthorization;
     }
@@ -349,14 +348,11 @@ class Server {
    *
    * @param {object} authz Authorization object
    * @param {object} challenge Selected challenge
-   * @param {string} keyAuthorization Authorization key
    * @returns {Promise}
    */
 
   async #challengeRemoveFn(authz, challenge) {
-    console.log("Cleaning up challenge");
-
-    /* http-01 */
+    // http-01
     if (challenge.type === "http-01") {
       delete this.challengeCache[challenge.token];
     }
