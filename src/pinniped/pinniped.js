@@ -130,12 +130,6 @@ class Pinniped {
 
     const server = new Server(expressApp, this.config);
     server.start();
-
-    // server.listen(port, () => {
-    //   console.log(`\nServer started at: http://localhost:${port}`);
-    //   console.log(`├─ REST API: http://localhost:${port}/api`);
-    //   console.log(`└─ Admin UI: http://localhost:${port}/_/\n`);
-    // });
   }
 
   /**
