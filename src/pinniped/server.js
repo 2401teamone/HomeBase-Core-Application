@@ -31,17 +31,18 @@ class Server {
       altNames: config.altNames || [],
       port: config.port || 3000,
       domain: config.domain,
-      cors: config.cors || [],
+      directory: config.directory,
     };
 
-    this.createAltNames();
-    console.log(this.config);
+    this.formatAltNames();
     this.credentials;
     this.challengeCache = {};
   }
 
-  createAltNames() {
-    if (this.config.domain && !this.config.altNames.length) {
+  formatAltNames() {
+    if (this.config.altNames.length) {
+      this.config.altNames = this.config.altNames.split(",");
+    } else if (this.config.domain && !this.config.altNames.length) {
       this.config.altNames.push("www." + this.config.domain);
     }
   }
@@ -264,11 +265,14 @@ class Server {
     }
     this.certServer.start();
 
+    let directoryUrl = directory.letsencrypt.staging;
+    if (this.config.directory === "production") {
+      directoryUrl = directory.letsencrypt.production;
+    }
+
     // Init client
     const client = new Client({
-      // uncomment this for production
-      // directoryUrl: directory.letsencrypt.production,
-      directoryUrl: directory.letsencrypt.staging,
+      directoryUrl,
       accountKey: await crypto.createPrivateKey(),
     });
 
