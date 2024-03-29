@@ -144,10 +144,13 @@ class Server {
   #createHttpsServer() {
     let httpsServer = {};
     httpsServer.server = createServer(this.credentials, this.expressApp);
+    const domain = this.config.domain;
 
     httpsServer.start = () => {
       this.httpsServer.server.listen(443, () => {
-        console.log("HTTPS server running on port 443");
+        console.log(`\nServer started at: https://${domain}`);
+        console.log(`├─ REST API: https://${domain}/api`);
+        console.log(`└─ Admin UI: https://${domain}/_/\n`);
       });
     };
 
