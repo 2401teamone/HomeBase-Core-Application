@@ -17,7 +17,11 @@
     "reset-db": "rm -f pnpd_data/pnpd.db && touch pnpd_data/pnpd.db && rm -f pnpd_data/pnpd.db-wal && rm -f pnpd_data/pnpd.db-shm && rm -f pnpd_data/logs.db",
     "reset-sessions": "rm -f pnpd_data/session.db && touch pnpd_data/session.db",
     "reset-migrations": "rm -r pnpd_data/migrations && sqlite3 pnpd_data/pnpd.db < pnpd_data/drop-migrations.sql",
-    "lint": "npx eslint src"
+    "lint": "npx eslint src",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --forceExit"
+  },
+  "jest": {
+    "transform": {}
   },
   "contributors": [
     {
@@ -56,6 +60,7 @@
   "devDependencies": {
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
+    "jest": "^29.7.0",
     "nodemon": "^3.1.0",
     "pinniped": "latest"
   }
