@@ -95,8 +95,6 @@ class AuthApi {
       delete createdUser.password;
       parseJsonColumns(table, [createdUser]);
 
-      console.log("User created :", createdUser);
-
       const responseData = new ResponseData(req, res, createdUser);
 
       await this.app.onRegisterUser().trigger(responseData);
@@ -186,7 +184,6 @@ class AuthApi {
       });
 
       delete createdAdmin[0].password;
-      console.log("Admin Created: ", createdAdmin[0]);
 
       const responseData = new ResponseData(req, res, {
         user: createdAdmin[0].username,
@@ -221,7 +218,6 @@ class AuthApi {
       req.session.user = existingUser[0];
       delete req.session.user.password;
 
-      console.log("Logged in user: ", req.session.user);
       const responseData = new ResponseData(req, res, {
         user: req.session.user,
       });
@@ -254,7 +250,6 @@ class AuthApi {
       req.session.user = existingAdmin[0];
       delete req.session.user.password;
 
-      console.log("Logged in Admin: ", req.session.user);
       const responseData = new ResponseData(req, res, {
         user: req.session.user,
       });
@@ -271,7 +266,6 @@ class AuthApi {
    */
   logoutHandler() {
     return async (req, res, next) => {
-      console.log("Logging out user: ", req.session.user);
       const responseData = new ResponseData(req, res, "User Logged Out");
 
       await this.app.onLogout().trigger(responseData);
