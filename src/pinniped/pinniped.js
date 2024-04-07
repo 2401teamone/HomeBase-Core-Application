@@ -113,7 +113,7 @@ class Pinniped {
 
   /**
    * Returns the app's DAO instance.
-   * @returns {object DAO}
+   * @returns {DAO}
    */
   getDAO() {
     return this.DAO;
@@ -133,71 +133,138 @@ class Pinniped {
   }
 
   /**
-   * Returns an object that adds an event handler and trigger events of the type: "GET_ALL_ROWS".
+   * @namespace PinnipedEventTypes
+   */
+
+  /**
    * The callback passed to add is executed when the event is heard on the passed in tables.
+   * @memberof PinnipedEventTypes
    * @param {...string} tables
-   * @returns {object}
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
    */
   onGetAllRows(...tables) {
     return new PinnipedEvent(this.emitter, "GET_ALL_ROWS", tables);
   }
-
+  /**
+   * The callback passed to add is executed when the event is heard on the passed in tables.
+   * @memberof PinnipedEventTypes
+   * @param {...string} tables
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onGetOneRow(...tables) {
     return new PinnipedEvent(this.emitter, "GET_ONE_ROW", tables);
   }
-
+  /**
+   * The callback passed to add is executed when the event is heard on the passed in tables.
+   * @memberof PinnipedEventTypes
+   * @param {...string} tables
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onCreateOneRow(...tables) {
     return new PinnipedEvent(this.emitter, "CREATE_ONE_ROW", tables);
   }
-
+  /**
+   * The callback passed to add is executed when the event is heard on the passed in tables.
+   * @memberof PinnipedEventTypes
+   * @param {...string} tables
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onUpdateOneRow(...tables) {
     return new PinnipedEvent(this.emitter, "UPDATE_ONE_ROW", tables);
   }
-
+  /**
+   * The callback passed to add is executed when the event is heard on the passed in tables.
+   * @memberof PinnipedEventTypes
+   * @param {...string} tables
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onDeleteOneRow(...tables) {
     return new PinnipedEvent(this.emitter, "DELETE_ONE_ROW", tables);
   }
-
+  /**
+   * @memberof PinnipedEventTypes
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onBackupDatabase() {
     return new PinnipedEvent(this.emitter, "BACKUP_DATABASE");
   }
 
+  /**
+   * @memberof PinnipedEventTypes
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onRegisterUser() {
     return new PinnipedEvent(this.emitter, "REGISTER_USER");
   }
 
+  /**
+   * @memberof PinnipedEventTypes
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onRegisterAdmin() {
     return new PinnipedEvent(this.emitter, "REGISTER_ADMIN");
   }
 
+  /**
+   * @memberof PinnipedEventTypes
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onLoginUser() {
     return new PinnipedEvent(this.emitter, "LOGIN_USER");
   }
 
+  /**
+   * @memberof PinnipedEventTypes
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onLoginAdmin() {
     return new PinnipedEvent(this.emitter, "LOGIN_ADMIN");
   }
 
+  /**
+   * @memberof PinnipedEventTypes
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onLogout() {
     return new PinnipedEvent(this.emitter, "LOGOUT");
   }
 
+  /**
+   * @memberof PinnipedEventTypes
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onCustomRoute() {
     return new PinnipedEvent(this.emitter, "CUSTOM_ROUTE");
   }
 
+  /**
+   * @memberof PinnipedEventTypes
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onGetTableMeta() {
     return new PinnipedEvent(this.emitter, "GET_TABLE_META");
   }
 
+  /**
+   * @memberof PinnipedEventTypes
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onCreateTable() {
     return new PinnipedEvent(this.emitter, "CREATE_TABLE");
   }
 
+  /**
+   * @memberof PinnipedEventTypes
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onUpdateTable() {
     return new PinnipedEvent(this.emitter, "UPDATE_TABLE");
   }
 
+  /**
+   * @memberof PinnipedEventTypes
+   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   */
   onDropTable() {
     return new PinnipedEvent(this.emitter, "DROP_TABLE");
   }

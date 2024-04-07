@@ -16,7 +16,7 @@ class DAO {
   /**
    * Connects to the Better-Sqlite3 Database with Knex.
    * Allows for queries to be chained to the returned Knex instance.
-   * @returns {Knex Instance}
+   * @returns {object} knex instance
    */
   _connect(thisDAO) {
     if (!fs.existsSync("pnpd_data")) fs.mkdirSync("pnpd_data");
@@ -53,18 +53,14 @@ class DAO {
 
   /**
    * Obtains the Knex instance that connected to the database.
-   * If the transaction connection to the database exists,
-   * But the transaction is not completed: return this.trxDB.
-   * If the transaction connection doesn't exist,
-   * Or the transaction is completed: return this.DB.
-   * @returns {object Transaction} Knex Instance - this.db || this.trxDB
+   * @returns {object} knex instance
    */
   getDB() {
     return this.db;
   }
 
   /**
-   * @returns {object better-sqlite3 connection}
+   * @returns {object} - better-sqlite3 connection
    */
   async getRawSqliteConnection() {
     // adds a connection to the knex pool so dao has access to the raw sqlite3 connection
@@ -129,7 +125,7 @@ class DAO {
    * Searches the table 'tablemeta' and filters based on the name parameter.
    * Receives an instance of Table if found.
    * @param {string} tableName
-   * @returns {object Table} table
+   * @returns {Table} table
    */
   async findTableByName(tableName) {
     try {
@@ -145,7 +141,7 @@ class DAO {
   /**
    * Searches the table 'tablemeta' and filters based on the ID parameter.
    * @param {string} id
-   * @returns {object Table} table
+   * @returns {Table} table
    */
   async findTableById(id) {
     try {
@@ -280,7 +276,7 @@ class DAO {
 
   /**
    * Creates the tablemeta table in the database.
-   * @returns {Promise <undefined>}
+   * @returns {Promise }
    */
   async createTablemeta() {
     await this.getDB().schema.createTable("tablemeta", function (table) {
@@ -300,7 +296,10 @@ class DAO {
   /**
    * A modified version of createOne, but inserts an object
    * Specifically into 'tablemeta'.
-   * @param {id: string, name: string, columns: 'stringJSON'} tableData
+   * @param {object} tableData
+   * @param {string} tableData.id
+   * @param {string} tableData.name
+   * @param {string} tableData.columns - JSON string of columns
    * @return {object} createdRow
    */
   async addTableMetaData(tableData) {
@@ -312,8 +311,10 @@ class DAO {
 
   /**
    * Updates the row in 'tablemeta' with the properties contained within tableData.
-   * @param {id: string, name: string, columns: stringJSON} tableData
-   * @param {object Transaction} trx
+   * @param {object} tableData
+   * @param {string} tableData.id
+   * @param {string} tableData.name
+   * @param {string} tableData.columns - JSON string of columns
    * @return {object} updatedRow
    */
   async updateTableMetaData(tableData) {
@@ -336,8 +337,8 @@ class DAO {
   /**
    * Creates a table within the database,
    * Then adds the columns to modify the table's structure.
-   * @param {object Table} table
-   * @returns {Promise <undefined>}
+   * @param {Table} table
+   * @returns {Promise }
    */
   async createTable(table) {
     const name = table.name;
@@ -384,7 +385,7 @@ class DAO {
   /**
    * Adds the column to the specified table.
    * @param {string} tableName
-   * @param {object Column} column
+   * @param {Column} column
    */
   async addColumn(tableName, column) {
     await this.getDB().schema.table(tableName, (table) => {
@@ -417,8 +418,8 @@ class DAO {
 
   /**
    * Internal method. Conditionally adds the specific column onto the table object received. Used in both createTable and addColumn.
-   * @param {object Column} column
-   * @param {object knex table instance} table
+   * @param {Column} column
+   * @param {object} table - knex table instance
    */
   _addColumnPerSpecs(column, table) {
     if (column.type === "relation") {

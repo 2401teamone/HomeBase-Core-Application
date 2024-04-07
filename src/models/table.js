@@ -32,6 +32,10 @@ class Table {
     return importString;
   }
 
+  /**
+   *
+   * @param {object} - creates a table
+   */
   constructor({
     id = generateUuid(),
     name = "",
@@ -147,7 +151,7 @@ class Table {
 
   /**
    * Validates the proposed schema changes.
-   * @param {object Table} newTable
+   * @param {Table} newTable
    * @returns {undefined}
    */
   async validateUpdateTo(newTable) {
@@ -227,7 +231,7 @@ class Table {
   /**
    * Attempts to run migration up, throws error and removes migration file and
    * row from database.
-   * @param {knex instance} db
+   * @param {object} db - knex instance
    * @param {string} filePath
    * @returns {undefined}
    */
@@ -333,7 +337,7 @@ class Table {
    * (Rename Column) The column exists in both, but has a different name in the two tables.
    *
    * Creates and runs migration file using `knex` migrations api and `fs`
-   * @param {object Table} newTable
+   * @param {Table} newTable
    * @returns {undefined}
    */
   async updateTo(newTable) {

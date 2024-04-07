@@ -4,6 +4,7 @@ node_modules
 dist
 .DS_Store
 
+out
 backup
 pnpd.db
 logs.db
