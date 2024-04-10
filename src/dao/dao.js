@@ -156,6 +156,11 @@ class DAO {
     }
   }
 
+  /**
+   * Searches the table 'tablemeta' and filters based on the name or ID parameter.
+   * @param {string} nameOrId
+   * @returns {object Table} table
+   */
   async findTableByNameOrId(nameOrId) {
     try {
       const table = await this.getDB()("tablemeta")
