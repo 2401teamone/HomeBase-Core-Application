@@ -22,12 +22,12 @@ export default function generateSchemaRouter(app) {
   router.get("/", catchError(schemaApi.getAllTablesHandler()));
   router.post("/", catchError(schemaApi.createTableHandler()));
   router.put(
-    "/:tableId",
+    "/:table",
     loadTableContext(app),
     catchError(schemaApi.updateTableHandler())
   );
   router.delete(
-    "/:tableId",
+    "/:table",
     loadTableContext(app),
     catchError(schemaApi.dropTableHandler())
   );

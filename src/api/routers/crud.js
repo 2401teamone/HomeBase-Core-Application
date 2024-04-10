@@ -15,7 +15,7 @@ import generateUuid from "../../utils/generate_uuid.js";
 import ResponseData from "../../models/response_data.js";
 import { creatorAuthCheck, creatorAuthFilter } from "../../utils/row_auth.js";
 
-const BASE = "/:tableId/rows";
+const BASE = "/:table/rows";
 
 /**
  * Creates an Express Router object
