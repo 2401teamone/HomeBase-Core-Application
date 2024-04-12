@@ -6,7 +6,7 @@ Pinniped is an open-source, JavaScript backend-as-a-service application that off
  * Custom events and extensible routes.
 
 ## Table of Contents
-* [How to Use](https://github.com/Pinniped-BaaS/pinniped/tree/readme?tab=readme-ov-file#table-of-contents)
+* [How to Use](https://github.com/Pinniped-BaaS/pinniped/tree/readme?tab=readme-ov-file#how-to-use)
 * [Documentation](https://github.com/Pinniped-BaaS/pinniped/tree/readme?tab=readme-ov-file#documentation)
 
 ## How to Use
