@@ -90,7 +90,13 @@ If the project was created using `pinniped-cli`, it's recommended to write these
 the specified HTTP request method at that path, it'll invoke the handler passed in.
 ```javascript
 app.addRoute("GET", "/store", () => {
-	console.log("GET request received at /store");
+  console.log("GET request received at /store");
+
+// The route can accept parameters
+app.addRoute("GET", "/custom/:msg", (c) => {
+  const msg = c.pathParam('msg');
+  return c.json(200, { message: `My custom endpoint ${msg}` });
+});
 });
 ```
 ### onGetOneRow ( ... tables)
@@ -99,16 +105,15 @@ The tables in the database can be specified to invoke the handler on this event,
 To have it run on any table, leave the parameter empty. 
 ```javascript
 app.onGetOneRow().add(() => {
-	console.log("onGetOneRow triggered on any tables"
+  console.log("onGetOneRow triggered on any tables"
 });
 
-
 app.onGetOneRow("seals").add(() => {
-	console.log("onGetOneRow triggered on 'seals' table");
+  console.log("onGetOneRow triggered on 'seals' table");
 });
 
 app.onGetOneRow("seals", "dolphins").add(() => {
-	console.log("onGetOneRow triggered on 'seals' and 'dolphin' tables");
+  console.log("onGetOneRow triggered on 'seals' and 'dolphin' tables");
 });
 
 // Trigger the Event Artificially
@@ -118,14 +123,14 @@ app.onGetOneRow().trigger();
 Functions similarly to `onGetOneRow` except in the event where all rows are grabbed.
 ```javascript
 app.onGetAllRows().add(() => {
-	console.log("onGetAllRows triggered on any table");
+  console.log("onGetAllRows triggered on any table");
 });
 ```
 ### onCreateOneRow ( ... tables)
 Functions similarly to `onGetOneRow` except in the event where a row is created.
 ```javascript
 app.onCreateOneRow().add(() => {
-	console.log("onCreateOneRow triggered on any table");
+  console.log("onCreateOneRow triggered on any table");
 });
 ```
 
@@ -133,80 +138,81 @@ app.onCreateOneRow().add(() => {
 Functions similarly to `onGetOneRow` except in the event where a row is updated.
 ```javascript
 app.onUpdateOneRow().add(() => {
-	console.log("onUpdateOneRow triggered on any table");
+  console.log("onUpdateOneRow triggered on any table");
 });
 ```
 ### onDeleteOneRow ( ... tables)
 Functions similarly to `onGetOneRow` except in the event where a row is deleted.
 ```javascript
 app.onDeleteOneRow().add(() => {
-	console.log("onDeleteOneRow triggered on all tables");
+  console.log("onDeleteOneRow triggered on all tables");
 });
 ```
 ### onBackupDatabase
 Can add handlers in the event that the database is backed up.
 ```javascript
 app.onBackupDatabase().add(() => {
-	console.log("Database backed up");
+  console.log("Database backed up");
 });
 ```
 ### onRegisterUser
 ```javascript
 app.onRegisterUser().add(() => {
-	console.log("User is registered");
+  console.log("User is registered");
+  sendUserWelcomeEmail();
 });
 ```
 ### onRegisterAdmin
 ```javascript
 app.onRegisterAdmin().add(() => {
-	console.log("Admin is registered");
+  console.log("Admin is registered");
 });
 ```
 ### onLoginUser
 ```javascript
 app.onLoginUser().add(() => {
-	console.log("User logged in");
+  console.log("User logged in");
 });
 ```
 ### onLoginAdmin
 ```javascript
 app.onLoginAdmin().add(() => {
-	console.log("Admin logged in");
+  console.log("Admin logged in");
 });
 ```
 ### onLogout
 ```javascript
 app.onLogout().add(() => {
-	console.log("Logged out");
+  console.log("Logged out");
 });
 ```
 ### onCustomRoute
 ```javascript
 app.onCustomRoute().add(() => {
-	console.log("Custom route is hit with a request");
+  console.log("Custom route is hit with a request");
 });
 ```
 ### onGetTableMeta
 ```javascript
 app.onGetTableMeta().add(() => {
-	console.log("Get 'tablemeta'");
+  console.log("Get 'tablemeta'");
 });
 ```
 ### onCreateTable
 ```javascript
 app.onCreateTable().add(() => {
-	console.log("Table created");
+  console.log("Table created");
 });
 ```
 ### onUpdateTable
 ```javascript
 app.onUpdateTable().add(() => {
-	console.log("Table updated");
+  console.log("Table updated");
 });
 ```
 ### onDropTable
 ```javascript
 app.onDropTable().add(() => {
-	console.log("Table dropped");
+  console.log("Table dropped");
 });
 ```
