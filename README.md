@@ -50,6 +50,7 @@ app.start(serverConfig);
 ### Server Config
 If your Pinniped-powered project was built with `pinniped-cli`, then the project's `.env` file will contain supported configuration settings.
 
+
 ### SERVER_DOMAIN 
 The base domain name for requesting a TLS certificate from Let's Encrypt. If `SERVER_DOMAIN` has a value, it'll auto-cert the domain.
 If this is undefined the server will run on `SERVER_PORT`. Otherwise, if it's present and the auto-cert runs, the `SERVER_PORT` value is ignored and the server will run on port 443 with a redirect server (running on port 80) that redirects to port 443. 
@@ -81,6 +82,7 @@ CORS_WHITELIST=www.example.com,/regexvalue/,www.example2.com
 
 ### SESSION_SECRET 
 Used by the server to encrypt session information. If left blank the server will automatically generate one and save it here.
+
 
 ### Custom Routes and Event Handlers
 If the project was created using `pinniped-cli`, it's recommended to write these methods in the project's `index.js`.
