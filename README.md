@@ -10,6 +10,8 @@ Pinniped is an open-source, JavaScript backend-as-a-service application that off
 * [Documentation](https://github.com/Pinniped-BaaS/Pinniped/tree/readme?tab=readme-ov-file#documentation)
 
 ## How to Use
+Before starting, check if you meet the requirements [here](https://github.com/Pinniped-BaaS).
+
 Install the dependency
 ```javascript 
 npm install pinniped
@@ -152,6 +154,3 @@ app.onDropTable().add(() => {
 	console.log("Table dropped");
 });
 ```
-
-##Deployment
-For deploying your app, check out the instructions [here]().
