@@ -30,7 +30,7 @@ app.start();
 ```
 
 ## Documentation
-## addRoute (method, path, handler)
+### addRoute (method, path, handler)
 `addRoute` mounts the parameter, path, onto the host's path. Once it receives
 the specified HTTP request method at that path, it'll invoke the handler passed in.
 ```javascript
@@ -38,7 +38,7 @@ app.addRoute("GET", "/store", () => {
 	console.log("GET request received at /store");
 });
 ```
-## onGetOneRow ( ... tables)
+### onGetOneRow ( ... tables)
 `onGetOneRow` returns a new `PinnipedEvent` that can `add` a handler or `trigger` the event.
 The tables in the database can be specified to invoke the handler on this event, getting a single row.
 To have it run on any table, leave the parameter empty. 
@@ -59,14 +59,14 @@ app.onGetOneRow("seals", "dolphins").add(() => {
 // Trigger the Event Artificially
 app.onGetOneRow().trigger();
 ```
-## onGetAllRows ( ... tables)
+### onGetAllRows ( ... tables)
 Functions similarly to `onGetOneRow` except in the event where all rows are grabbed.
 ```javascript
 app.onGetAllRows().add(() => {
 	console.log("onGetAllRows triggered on any table");
 });
 ```
-## onCreateOneRow ( ... tables)
+### onCreateOneRow ( ... tables)
 Functions similarly to `onGetOneRow` except in the event where a row is created.
 ```javascript
 app.onCreateOneRow().add(() => {
@@ -74,82 +74,82 @@ app.onCreateOneRow().add(() => {
 });
 ```
 
-## onUpdateOneRow ( ... tables)
+### onUpdateOneRow ( ... tables)
 Functions similarly to `onGetOneRow` except in the event where a row is updated.
 ```javascript
 app.onUpdateOneRow().add(() => {
 	console.log("onUpdateOneRow triggered on any table");
 });
 ```
-## onDeleteOneRow ( ... tables)
+### onDeleteOneRow ( ... tables)
 Functions similarly to `onGetOneRow` except in the event where a row is deleted.
 ```javascript
 app.onDeleteOneRow().add(() => {
 	console.log("onDeleteOneRow triggered on all tables");
 });
 ```
-## onBackupDatabase
+### onBackupDatabase
 Can add handlers in the event that the database is backed up.
 ```javascript
 app.onBackupDatabase().add(() => {
 	console.log("Database backed up");
 });
 ```
-## onRegisterUser
+### onRegisterUser
 ```javascript
 app.onRegisterUser().add(() => {
 	console.log("User is registered");
 });
 ```
-## onRegisterAdmin
+### onRegisterAdmin
 ```javascript
 app.onRegisterAdmin().add(() => {
 	console.log("Admin is registered");
 });
 ```
-## onLoginUser
+### onLoginUser
 ```javascript
 app.onLoginUser().add(() => {
 	console.log("User logged in");
 });
 ```
-## onLoginAdmin
+### onLoginAdmin
 ```javascript
 app.onLoginAdmin().add(() => {
 	console.log("Admin logged in");
 });
 ```
-## onLogout
+### onLogout
 ```javascript
 app.onLogout().add(() => {
 	console.log("Logged out");
 });
 ```
-## onCustomRoute
+### onCustomRoute
 ```javascript
 app.onCustomRoute().add(() => {
 	console.log("Custom route is hit with a request");
 });
 ```
-## onGetTableMeta
+### onGetTableMeta
 ```javascript
 app.onGetTableMeta().add(() => {
 	console.log("Get 'tablemeta'");
 });
 ```
-## onCreateTable
+### onCreateTable
 ```javascript
 app.onCreateTable().add(() => {
 	console.log("Table created");
 });
 ```
-## onUpdateTable
+### onUpdateTable
 ```javascript
 app.onUpdateTable().add(() => {
 	console.log("Table updated");
 });
 ```
-## onDropTable
+### onDropTable
 ```javascript
 app.onDropTable().add(() => {
 	console.log("Table dropped");
