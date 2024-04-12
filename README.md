@@ -6,15 +6,14 @@ Pinniped is an open-source, JavaScript backend-as-a-service application that off
  * Custom events and extensible routes.
 
 ## Table of Contents
-* Installation
-* Documentation
+* [How to Use]
+* [Documentation](https://github.com/Pinniped-BaaS/Pinniped/tree/readme?tab=readme-ov-file#documentation)
 
-## Installation
+## How to Use
 Install the dependency
 ```javascript 
 npm install pinniped
 ```
-## Run
 Import and create a Pinniped instance
 ```javascript
 // CommonJS
