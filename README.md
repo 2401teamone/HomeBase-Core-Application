@@ -83,6 +83,8 @@ CORS_WHITELIST=www.example.com,/regexvalue/,www.example2.com
 Used by the server to encrypt session information. If left blank the server will automatically generate one and save it here.
 
 ### Custom Routes and Event Handlers
+If the project was created using `pinniped-cli`, it's recommended to write these methods in the project's `index.js`.
+
 ### addRoute (method, path, handler)
 `addRoute` mounts the parameter, path, onto the host's path. Once it receives
 the specified HTTP request method at that path, it'll invoke the handler passed in.
