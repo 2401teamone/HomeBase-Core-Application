@@ -52,7 +52,7 @@ If your Pinniped-powered project was built with `pinniped-cli`, then the project
 
 ### SERVER_DOMAIN 
 The base domain name for requesting a TLS certificate from Let's Encrypt. If `SERVER_DOMAIN` has a value, it'll auto-cert the domain.
-If this is undefined the server will run on `SERVER_PORT`. Otherwise, if it's present and the auto-cert runs, the `SERVER_PORT` value is ignored and the server will run on port 443 with a redirect server, on port 80, redirecting to port 443. 
+If this is undefined the server will run on `SERVER_PORT`. Otherwise, if it's present and the auto-cert runs, the `SERVER_PORT` value is ignored and the server will run on port 443 with a redirect server (running on port 80) that redirects to port 443. 
 ```javascript
 SERVER_DOMAIN=example.com
 ```
