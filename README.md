@@ -21,6 +21,7 @@ Import and create a Pinniped instance
 // CommonJS
 const { pnpd } = require('pinniped');
 const app = pnpd();
+app.start();
 
 // Or ECMAScript
 import { pnpd } from 'pinniped'
