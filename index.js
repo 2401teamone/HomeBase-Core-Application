@@ -13,14 +13,25 @@ const app = pnpd(serverConfig);
 
 // Extensibility Invocations
 
-// add custom routes
-app.addRoute("GET", "/seals", (req, res, next) => {
-  res.json({ custom: "elephant seals" });
+// Add custom routes
+app.addRoute("GET", "/seals", (req, res, next) => {});
+
+// add event-driven functionality
+app.onGetAllRows().add(async (event) => {
+  console.log("Triggered Event: 'GET_ALL_ROW' For all tables");
+  await new Promise((resolve, reject) => {
+    setTimeout(() => console.log("All Tables Async Call"), 1000);
+  });
+  resolve();
 });
 
 // add event-driven functionality
-app.onGetOneRow("seals").add((event) => {
-  console.log("Triggered event: onGetAllRows");
+app.onGetAllRows("seals").add(async (event) => {
+  console.log("Triggered Event: GET_ALL_ROWS for 'seals' table");
+  await new Promise((resolve, reject) => {
+    setTimeout(() => console.log("Seals Table Async Call"), 1000);
+  });
+  resolve();
 });
 
 app.start();
