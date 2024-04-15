@@ -11,11 +11,11 @@ import Table from "../../models/table.js";
  */
 export default function loadTableContext(app) {
   return catchError(async (req, res, next) => {
-    const { tableId } = req.params;
-    if (!tableId) throw new BadRequestError("Table ID is required.");
+    const { table } = req.params;
+    if (!table) throw new BadRequestError("Table Name or ID is required.");
 
-    let foundTable = await app.getDAO().findTableById(tableId);
-    if (!foundTable.length) throw new TableNotFoundError(tableId);
+    let foundTable = await app.getDAO().findTableByNameOrId(table);
+    if (!foundTable.length) throw new TableNotFoundError(table);
     foundTable = foundTable[0];
 
     const tableContext = new Table(foundTable);

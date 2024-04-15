@@ -157,6 +157,23 @@ class DAO {
   }
 
   /**
+   * Searches the table 'tablemeta' and filters based on the name or ID parameter.
+   * @param {string} nameOrId
+   * @returns {object Table} table
+   */
+  async findTableByNameOrId(nameOrId) {
+    try {
+      const table = await this.getDB()("tablemeta")
+        .select("*")
+        .where({ name: nameOrId })
+        .orWhere({ id: nameOrId });
+      return table;
+    } catch (e) {
+      throw new Error(e.message);
+    }
+  }
+
+  /**
    * With the additional parameter, fields, to search for specific rows filtered by specific columns.
    * Searches within a table with the given parameter in the database,
    * @param {string} tableName
