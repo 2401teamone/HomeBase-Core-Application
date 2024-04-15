@@ -97,10 +97,11 @@ class AuthApi {
 
       const responseData = new ResponseData(req, res, createdUser);
 
-      await this.app.onRegisterUser().trigger(responseData);
-      if (responseData.responseSent()) return null;
-
-      res.status(201).json(responseData.formatGeneralResponse());
+      this.app.emitter.on("RegisterUserEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(201).json(responseData.formatGeneralResponse());
+      });
+      await this.app.onRegisterUser.triggerListeners(responseData);
     };
   }
 
@@ -188,10 +189,13 @@ class AuthApi {
       const responseData = new ResponseData(req, res, {
         user: createdAdmin[0].username,
       });
-      await this.app.onRegisterAdmin().trigger(responseData);
-      if (responseData.responseSent()) return null;
 
-      res.status(201).json(responseData.formatGeneralResponse());
+      this.app.emitter.on("registerAdminEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(201).json(responseData.formatGeneralResponse());
+      });
+
+      await this.app.onRegisterAdmin.triggerListeners(responseData);
     };
   }
 
@@ -221,10 +225,12 @@ class AuthApi {
       const responseData = new ResponseData(req, res, {
         user: req.session.user,
       });
-      await this.app.onLoginUser().trigger(responseData);
-      if (responseData.responseSent()) return null;
 
-      res.status(200).send(responseData.formatGeneralResponse());
+      this.app.emitter.on("loginUserEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(200).send(responseData.formatGeneralResponse());
+      });
+      await this.app.onLoginUser.triggerListeners(responseData);
     };
   }
 
@@ -253,10 +259,12 @@ class AuthApi {
       const responseData = new ResponseData(req, res, {
         user: req.session.user,
       });
-      await this.app.onLoginAdmin().trigger(responseData);
-      if (responseData.responseSent()) return null;
+      this.app.emitter.on("loginAdminEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(200).send(responseData.formatGeneralResponse());
+      });
 
-      res.status(200).send(responseData.formatGeneralResponse());
+      await this.app.onLoginAdmin.triggerListeners(responseData);
     };
   }
 
@@ -268,13 +276,13 @@ class AuthApi {
     return async (req, res, next) => {
       const responseData = new ResponseData(req, res, "User Logged Out");
 
-      await this.app.onLogout().trigger(responseData);
+      this.app.emitter.on("logoutEnd", () => {
+        if (responseData.responseSent()) return null;
+        delete req.session.user;
+        res.status(200).json(responseData.formatGeneralResponse());
+      });
 
-      if (responseData.responseSent()) return null;
-
-      delete req.session.user;
-
-      res.status(200).json(responseData.formatGeneralResponse());
+      await this.app.onLogout.triggerListeners(responseData);
     };
   }
 

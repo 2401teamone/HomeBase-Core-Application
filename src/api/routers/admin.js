@@ -79,11 +79,12 @@ class AdminAPI {
 
       const responseData = new ResponseData(req, res, { backupFileName });
 
-      await this.app.onBackupDatabase().trigger(responseData);
+      this.app.emitter.on("backupDatabaseEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(200).json(responseData.formatGeneralResponse());
+      });
 
-      if (responseData.responseSent()) return null;
-
-      res.status(200).json(responseData.formatGeneralResponse());
+      await this.app.onBackupDatabase.triggerListeners(responseData);
     };
   }
 

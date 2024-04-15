@@ -103,25 +103,14 @@ class CrudApi {
 
       // Get the pnpd_event object for this event
       //
-      this.app.emitter.on(this.app.onGetAllRows.eventName + "_END", () => {
+      this.app.emitter.on(this.app.onGetAllRows.eventName + "End", () => {
         if (responseData.responseSent()) return null;
-        console.log("beginning of lastEvent callback!");
         res.status(200).json(responseData.formatAllResponse());
       });
 
       // Trigger all "GET_ALL_ROWS" events
       this.app.onGetAllRows.triggerListeners(responseData);
     };
-
-    // Fire the onGetAllRows event
-    // await this.app.onGetAllRows().trigger(responseData);
-    // console.log("crud handler");
-
-    // // If a registered event handler sends a response to the client, early return.
-    // if (responseData.responseSent()) return null;
-
-    // res.status(200).json(responseData.formatAllResponse());
-    // };
   }
 
   /**
@@ -145,12 +134,12 @@ class CrudApi {
       parseJsonColumns(table, row);
 
       const responseData = new ResponseData(req, res, { table, rows: row });
+      this.app.emitter.on("getOneRowEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(200).json(responseData.formatOneResponse());
+      });
 
-      await this.app.onGetOneRow().trigger(responseData);
-
-      if (responseData.responseSent()) return null;
-
-      res.status(200).json(responseData.formatOneResponse());
+      await this.app.onGetOneRow.trigger(responseData);
     };
   }
 
@@ -178,11 +167,12 @@ class CrudApi {
         rows: createdRow,
       });
 
-      await this.app.onCreateOneRow().trigger(responseData);
+      this.app.emitter.on("createOneRowEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(201).json(responseData.formatOneResponse());
+      });
 
-      if (responseData.responseSent()) return null;
-
-      res.status(201).json(responseData.formatOneResponse());
+      await this.app.onCreateOneRow.trigger(responseData);
     };
   }
 
@@ -215,10 +205,12 @@ class CrudApi {
         rows: updatedRow,
       });
 
-      await this.app.onUpdateOneRow().trigger(responseData);
-      if (responseData.responseSent()) return null;
+      this.app.emitter.on("updateOneRowEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(200).json(responseData.formatOneResponse());
+      });
 
-      res.status(200).json(responseData.formatOneResponse());
+      await this.app.onUpdateOneRow.trigger(responseData);
     };
   }
 
@@ -243,11 +235,13 @@ class CrudApi {
       await this.app.getDAO().deleteOne(table.name, rowId);
 
       const responseData = new ResponseData(req, res, { table, rows: row });
-      await this.app.onDeleteOneRow().trigger(responseData);
 
-      if (responseData.responseSent()) return null;
+      this.app.emitter.on("deleteOneRowEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(204).end();
+      });
 
-      res.status(204).end();
+      await this.app.onDeleteOneRow.trigger(responseData);
     };
   }
 }

@@ -24,7 +24,7 @@ export default class PinnipedEvent {
         await handler(responseData);
         this.count--;
         if (this.count === 0) {
-          this.emitter.emit(`${this.eventName}_END`);
+          this.emitter.emit(`${this.eventName}End`);
         }
       } else {
         this.count--;

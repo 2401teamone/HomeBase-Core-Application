@@ -134,84 +134,93 @@ class Pinniped {
   }
 
   initEvents() {
-    this.onGetAllRows = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
-    // this.onGetOneRow = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
-    // this.onGetAllRows = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
-    // this.onGetAllRows = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
-    // this.onGetAllRows = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
-    // this.onGetAllRows = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
-    // this.onGetAllRows = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
+    this.onGetAllRows = new PinnipedEvent(this.emitter, "getAllRows");
+    this.onGetOneRow = new PinnipedEvent(this.emitter, "getOneRow");
+    this.onCreateOneRow = new PinnipedEvent(this.emitter, "createOneRow");
+    this.onUpdateOneRow = new PinnipedEvent(this.emitter, "updateOneRow");
+    this.onDeleteOneRow = new PinnipedEvent(this.emitter, "deleteOneRow");
+    this.onBackupDatabase = new PinnipedEvent(this.emitter, "backupDatabase");
+    this.onRegisterUser = new PinnipedEvent(this.emitter, "registerUser");
+    this.onRegisterAdmin = new PinnipedEvent(this.emitter, "registerAdmin");
+    this.onLoginUser = new PinnipedEvent(this.emitter, "loginUser");
+    this.onLoginAdmin = new PinnipedEvent(this.emitter, "loginAdmin");
+    this.onLogout = new PinnipedEvent(this.emitter, "logout");
+    this.onCustomRoute = new PinnipedEvent(this.emitter, "customRoute");
+    this.onGetTableMeta = new PinnipedEvent(this.emitter, "getTableMeta");
+    this.onCreateTable = new PinnipedEvent(this.emitter, "createTable");
+    this.onUpdateTable = new PinnipedEvent(this.emitter, "updateTable");
+    this.onDropTable = new PinnipedEvent(this.emitter, "dropTable");
   }
 
-  /**
-   * Returns an object that adds an event handler and trigger events of the type: "GET_ALL_ROWS".
-   * The callback passed to add is executed when the event is heard on the passed in tables.
-   * @param {...string} tables
-   * @returns {object}
-   */
-  onGetAllRows(...tables) {
-    return new PinnipedEvent(this.emitter, "GET_ALL_ROWS", tables);
-  }
+  // /**
+  //  * Returns an object that adds an event handler and trigger events of the type: "GET_ALL_ROWS".
+  //  * The callback passed to add is executed when the event is heard on the passed in tables.
+  //  * @param {...string} tables
+  //  * @returns {object}
+  //  */
+  // onGetAllRows(...tables) {
+  //   return new PinnipedEvent(this.emitter, "GET_ALL_ROWS", tables);
+  // }
 
-  onGetOneRow(...tables) {
-    return new PinnipedEvent(this.emitter, "GET_ONE_ROW", tables);
-  }
+  // onGetOneRow(...tables) {
+  //   return new PinnipedEvent(this.emitter, "GET_ONE_ROW", tables);
+  // }
 
-  onCreateOneRow(...tables) {
-    return new PinnipedEvent(this.emitter, "CREATE_ONE_ROW", tables);
-  }
+  // onCreateOneRow(...tables) {
+  //   return new PinnipedEvent(this.emitter, "CREATE_ONE_ROW", tables);
+  // }
 
-  onUpdateOneRow(...tables) {
-    return new PinnipedEvent(this.emitter, "UPDATE_ONE_ROW", tables);
-  }
+  // onUpdateOneRow(...tables) {
+  //   return new PinnipedEvent(this.emitter, "UPDATE_ONE_ROW", tables);
+  // }
 
-  onDeleteOneRow(...tables) {
-    return new PinnipedEvent(this.emitter, "DELETE_ONE_ROW", tables);
-  }
+  // onDeleteOneRow(...tables) {
+  //   return new PinnipedEvent(this.emitter, "DELETE_ONE_ROW", tables);
+  // }
 
-  onBackupDatabase() {
-    return new PinnipedEvent(this.emitter, "BACKUP_DATABASE");
-  }
+  // onBackupDatabase() {
+  //   return new PinnipedEvent(this.emitter, "BACKUP_DATABASE");
+  // }
 
-  onRegisterUser() {
-    return new PinnipedEvent(this.emitter, "REGISTER_USER");
-  }
+  // onRegisterUser() {
+  //   return new PinnipedEvent(this.emitter, "REGISTER_USER");
+  // }
 
-  onRegisterAdmin() {
-    return new PinnipedEvent(this.emitter, "REGISTER_ADMIN");
-  }
+  // onRegisterAdmin() {
+  //   return new PinnipedEvent(this.emitter, "REGISTER_ADMIN");
+  // }
 
-  onLoginUser() {
-    return new PinnipedEvent(this.emitter, "LOGIN_USER");
-  }
+  // onLoginUser() {
+  //   return new PinnipedEvent(this.emitter, "LOGIN_USER");
+  // }
 
-  onLoginAdmin() {
-    return new PinnipedEvent(this.emitter, "LOGIN_ADMIN");
-  }
+  // onLoginAdmin() {
+  //   return new PinnipedEvent(this.emitter, "LOGIN_ADMIN");
+  // }
 
-  onLogout() {
-    return new PinnipedEvent(this.emitter, "LOGOUT");
-  }
+  // onLogout() {
+  //   return new PinnipedEvent(this.emitter, "LOGOUT");
+  // }
 
-  onCustomRoute() {
-    return new PinnipedEvent(this.emitter, "CUSTOM_ROUTE");
-  }
+  // onCustomRoute() {
+  //   return new PinnipedEvent(this.emitter, "CUSTOM_ROUTE");
+  // }
 
-  onGetTableMeta() {
-    return new PinnipedEvent(this.emitter, "GET_TABLE_META");
-  }
+  // onGetTableMeta() {
+  //   return new PinnipedEvent(this.emitter, "GET_TABLE_META");
+  // }
 
-  onCreateTable() {
-    return new PinnipedEvent(this.emitter, "CREATE_TABLE");
-  }
+  // onCreateTable() {
+  //   return new PinnipedEvent(this.emitter, "CREATE_TABLE");
+  // }
 
-  onUpdateTable() {
-    return new PinnipedEvent(this.emitter, "UPDATE_TABLE");
-  }
+  // onUpdateTable() {
+  //   return new PinnipedEvent(this.emitter, "UPDATE_TABLE");
+  // }
 
-  onDropTable() {
-    return new PinnipedEvent(this.emitter, "DROP_TABLE");
-  }
+  // onDropTable() {
+  //   return new PinnipedEvent(this.emitter, "DROP_TABLE");
+  // }
 }
 
 export const MigrationDao = DAO;
