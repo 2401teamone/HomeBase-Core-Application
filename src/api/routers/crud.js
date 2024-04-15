@@ -102,32 +102,26 @@ class CrudApi {
       const responseData = new ResponseData(req, res, { table, rows });
 
       // Get the pnpd_event object for this event
-      const event = this.app.onGetAllRows();
+      //
+      this.app.emitter.on(this.app.onGetAllRows.eventName + "_END", () => {
+        if (responseData.responseSent()) return null;
+        console.log("beginning of lastEvent callback!");
+        res.status(200).json(responseData.formatAllResponse());
+      });
 
-      // Get the number of registered event handlers for this event
-      const registeredEventCount = event.listenerCount("GET_ALL_ROWS");
-
-      // If there are registered event handlers for this event
-      if (registeredEventCount !== 0) {
-        // Fire the onGetAllRows event
-        await event.trigger(responseData);
-
-        event.on("GET_ALL_ROWS_END", () => {
-          if (responseData.responseSent()) return null;
-
-          res.status(200).json(responseData.formatAllResponse());
-        });
-      }
-
-      // Fire the onGetAllRows event
-      // await this.app.onGetAllRows().trigger(responseData);
-      // console.log("crud handler");
-
-      // // If a registered event handler sends a response to the client, early return.
-      // if (responseData.responseSent()) return null;
-
-      // res.status(200).json(responseData.formatAllResponse());
+      // Trigger all "GET_ALL_ROWS" events
+      this.app.onGetAllRows.triggerListeners(responseData);
     };
+
+    // Fire the onGetAllRows event
+    // await this.app.onGetAllRows().trigger(responseData);
+    // console.log("crud handler");
+
+    // // If a registered event handler sends a response to the client, early return.
+    // if (responseData.responseSent()) return null;
+
+    // res.status(200).json(responseData.formatAllResponse());
+    // };
   }
 
   /**

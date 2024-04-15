@@ -55,7 +55,7 @@ class SchemaApi {
       allTableMeta = allTableMeta.map((table) => new Table(table));
 
       const responseData = new ResponseData(req, res, { allTableMeta });
-      await this.app.onGetTableMeta().trigger(responseData);
+      await this.app.onGetTableMeta().triggerListeners(responseData);
 
       if (responseData.responseSent()) return null;
 

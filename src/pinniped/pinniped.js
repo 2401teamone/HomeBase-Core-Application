@@ -25,6 +25,7 @@ class Pinniped {
     this.emitter = new EventEmitter();
     this.customRoutes = [];
     this.dataBaseSetup();
+    this.initEvents();
   }
 
   async dataBaseSetup() {
@@ -130,6 +131,16 @@ class Pinniped {
 
     const server = new Server(expressApp, this.config);
     server.start();
+  }
+
+  initEvents() {
+    this.onGetAllRows = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
+    // this.onGetOneRow = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
+    // this.onGetAllRows = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
+    // this.onGetAllRows = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
+    // this.onGetAllRows = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
+    // this.onGetAllRows = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
+    // this.onGetAllRows = new PinnipedEvent(this.emitter, "GET_ALL_ROWS");
   }
 
   /**

@@ -17,21 +17,32 @@ const app = pnpd(serverConfig);
 app.addRoute("GET", "/seals", (req, res, next) => {});
 
 // add event-driven functionality
-app.onGetAllRows().add(async (event) => {
-  console.log("Triggered Event: 'GET_ALL_ROW' For all tables");
-  await new Promise((resolve, reject) => {
-    setTimeout(() => console.log("All Tables Async Call"), 1000);
-  });
-  resolve();
-});
+app.onGetAllRows.addListener(
+  async (responseData) => {
+    const { req, res, data } = responseData;
+
+    console.log("Triggered Event: 'GET_ALL_ROW' For all tables. Number 1");
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        console.log("All Tables Async Call Number 1");
+        resolve();
+      }, 1000);
+    });
+
+    data.rows.push({ enrichedStuff: "WOW LOOK AT ME" });
+  },
+  ["users"]
+);
 
 // add event-driven functionality
-app.onGetAllRows("seals").add(async (event) => {
-  console.log("Triggered Event: GET_ALL_ROWS for 'seals' table");
+app.onGetAllRows.addListener(async (event) => {
+  console.log("Triggered Event: GET_ALL_ROWS. Number 2");
   await new Promise((resolve, reject) => {
-    setTimeout(() => console.log("Seals Table Async Call"), 1000);
+    setTimeout(() => {
+      console.log("All Tables Async Call Number 2");
+      resolve();
+    }, 1500);
   });
-  resolve();
 });
 
 app.start();
