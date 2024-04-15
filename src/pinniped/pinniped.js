@@ -133,57 +133,67 @@ class Pinniped {
   }
 
   /**
+   * The following methods are available in index.js to create a listener for a specific event.
+   *
+   * *Usage for those methods that take a table argument:*
+   *
+   * `onGetAllRows('tablename1', 'tablename2').add(callback)`
+   * The callback will run anytime 'tablename1' or 'tablename2' have all their rows fetched.
+   *
+   * *Usage for those methods that don't take a table argument:*
+   *
+   * `onBackupDatabase().add(callback)`
+   *
+   * The callback function is passed 3 arguments: The Express req, and res objects that caused the event to be triggered and a `data` object with relevant data corresponding to
+   * the operation. The `res` object can be responded to from with the callback and the route handling the req will not attempt its default response.
+   *
+   * The PinnipedEvent returned by these methods also has a `trigger` method that is used internally to trigger the event.
    * @namespace PinnipedEventTypes
    */
 
   /**
-   * The callback passed to add is executed when the event is heard on the passed in tables.
    * @memberof PinnipedEventTypes
    * @param {...string} tables
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onGetAllRows(...tables) {
     return new PinnipedEvent(this.emitter, "GET_ALL_ROWS", tables);
   }
   /**
-   * The callback passed to add is executed when the event is heard on the passed in tables.
    * @memberof PinnipedEventTypes
    * @param {...string} tables
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onGetOneRow(...tables) {
     return new PinnipedEvent(this.emitter, "GET_ONE_ROW", tables);
   }
   /**
-   * The callback passed to add is executed when the event is heard on the passed in tables.
    * @memberof PinnipedEventTypes
    * @param {...string} tables
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onCreateOneRow(...tables) {
     return new PinnipedEvent(this.emitter, "CREATE_ONE_ROW", tables);
   }
   /**
-   * The callback passed to add is executed when the event is heard on the passed in tables.
    * @memberof PinnipedEventTypes
    * @param {...string} tables
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onUpdateOneRow(...tables) {
     return new PinnipedEvent(this.emitter, "UPDATE_ONE_ROW", tables);
   }
   /**
-   * The callback passed to add is executed when the event is heard on the passed in tables.
    * @memberof PinnipedEventTypes
    * @param {...string} tables
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onDeleteOneRow(...tables) {
     return new PinnipedEvent(this.emitter, "DELETE_ONE_ROW", tables);
   }
   /**
    * @memberof PinnipedEventTypes
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onBackupDatabase() {
     return new PinnipedEvent(this.emitter, "BACKUP_DATABASE");
@@ -191,7 +201,7 @@ class Pinniped {
 
   /**
    * @memberof PinnipedEventTypes
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onRegisterUser() {
     return new PinnipedEvent(this.emitter, "REGISTER_USER");
@@ -199,7 +209,7 @@ class Pinniped {
 
   /**
    * @memberof PinnipedEventTypes
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onRegisterAdmin() {
     return new PinnipedEvent(this.emitter, "REGISTER_ADMIN");
@@ -207,7 +217,7 @@ class Pinniped {
 
   /**
    * @memberof PinnipedEventTypes
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onLoginUser() {
     return new PinnipedEvent(this.emitter, "LOGIN_USER");
@@ -215,7 +225,7 @@ class Pinniped {
 
   /**
    * @memberof PinnipedEventTypes
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onLoginAdmin() {
     return new PinnipedEvent(this.emitter, "LOGIN_ADMIN");
@@ -223,7 +233,7 @@ class Pinniped {
 
   /**
    * @memberof PinnipedEventTypes
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onLogout() {
     return new PinnipedEvent(this.emitter, "LOGOUT");
@@ -231,7 +241,7 @@ class Pinniped {
 
   /**
    * @memberof PinnipedEventTypes
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onCustomRoute() {
     return new PinnipedEvent(this.emitter, "CUSTOM_ROUTE");
@@ -239,7 +249,7 @@ class Pinniped {
 
   /**
    * @memberof PinnipedEventTypes
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onGetTableMeta() {
     return new PinnipedEvent(this.emitter, "GET_TABLE_META");
@@ -247,7 +257,7 @@ class Pinniped {
 
   /**
    * @memberof PinnipedEventTypes
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onCreateTable() {
     return new PinnipedEvent(this.emitter, "CREATE_TABLE");
@@ -255,7 +265,7 @@ class Pinniped {
 
   /**
    * @memberof PinnipedEventTypes
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onUpdateTable() {
     return new PinnipedEvent(this.emitter, "UPDATE_TABLE");
@@ -263,7 +273,7 @@ class Pinniped {
 
   /**
    * @memberof PinnipedEventTypes
-   * @returns {PinnipedEvent} event - event object which can be triggered or add a listener
+   * @returns {PinnipedEvent}
    */
   onDropTable() {
     return new PinnipedEvent(this.emitter, "DROP_TABLE");
