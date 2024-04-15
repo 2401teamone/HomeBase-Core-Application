@@ -1,6 +1,6 @@
 import { Router } from "express";
 import loadTableContext from "../middleware/load_table_context.js";
-import apiRules from "../middleware/api_rules.js";
+import authCheck from "../middleware/auth_check.js";
 import {
   validatePostMeetsRequiredFields,
   validatePatchMeetsRequiredFields,
@@ -31,19 +31,19 @@ export default function generateCrudRouter(app) {
   router.get(
     BASE,
     loadTableContext(app),
-    apiRules(app),
+    authCheck(app),
     catchError(crudApi.getAllHandler())
   );
   router.get(
     `${BASE}/:rowId`,
     loadTableContext(app),
-    apiRules(app),
+    authCheck(app),
     catchError(crudApi.getOneHandler())
   );
   router.post(
     BASE,
     loadTableContext(app),
-    apiRules(app),
+    authCheck(app),
     validatePostMeetsRequiredFields(),
     validateRequestMeetsCustomValidation(),
     validateRequestMeetsUniqueValidation(app),
@@ -53,7 +53,7 @@ export default function generateCrudRouter(app) {
   router.patch(
     `${BASE}/:rowId`,
     loadTableContext(app),
-    apiRules(app),
+    authCheck(app),
     validatePatchMeetsRequiredFields(),
     validateRequestMeetsCustomValidation(),
     validateRequestMeetsUniqueValidation(app),
@@ -63,7 +63,7 @@ export default function generateCrudRouter(app) {
   router.delete(
     `${BASE}/:rowId`,
     loadTableContext(app),
-    apiRules(app),
+    authCheck(app),
     catchError(crudApi.deleteOneHandler())
   );
 
