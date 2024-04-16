@@ -34,6 +34,26 @@ app.onGetAllRows.addListener(
   ["users"]
 );
 
+app.onGetOneRow.addListener(
+  async (event) => {
+    // `event` argument contains the Express request and response
+    // along with the relevant row data from the database
+    const { req, res, row } = event;
+
+    const latestSealSightings = await sealSightingsApi(row.id);
+
+    // Conditionally return responses based on application specific logic
+    if (latestSealSightings.length === 0) {
+      res.status(404).json({ message: "No sightings found for this seal." });
+      return;
+    } else {
+      row.latestSightings = latestSealSightings;
+      res.status(200).json(row);
+    }
+  },
+  ["seals"]
+);
+
 // add event-driven functionality
 app.onGetAllRows.addListener(async (event) => {
   console.log("Triggered Event: GET_ALL_ROWS. Number 2");

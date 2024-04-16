@@ -103,7 +103,7 @@ class CrudApi {
 
       // Get the pnpd_event object for this event
       //
-      this.app.emitter.on(this.app.onGetAllRows.eventName + "End", () => {
+      this.app.emitter.on("getAllRowsEnd", () => {
         if (responseData.responseSent()) return null;
         res.status(200).json(responseData.formatAllResponse());
       });
@@ -134,12 +134,15 @@ class CrudApi {
       parseJsonColumns(table, row);
 
       const responseData = new ResponseData(req, res, { table, rows: row });
+
+      // Once all "getOneRow" events have finished execution, the "getOneRowEnd" event fires.
       this.app.emitter.on("getOneRowEnd", () => {
+        // If an event sends a response to the client, we won't try to resend it.
         if (responseData.responseSent()) return null;
         res.status(200).json(responseData.formatOneResponse());
       });
 
-      await this.app.onGetOneRow.trigger(responseData);
+      this.app.onGetOneRow.triggerListeners(responseData);
     };
   }
 
@@ -172,7 +175,7 @@ class CrudApi {
         res.status(201).json(responseData.formatOneResponse());
       });
 
-      await this.app.onCreateOneRow.trigger(responseData);
+      await this.app.onCreateOneRow.triggerListeners(responseData);
     };
   }
 
@@ -210,7 +213,7 @@ class CrudApi {
         res.status(200).json(responseData.formatOneResponse());
       });
 
-      await this.app.onUpdateOneRow.trigger(responseData);
+      await this.app.onUpdateOneRow.triggerListeners(responseData);
     };
   }
 
@@ -241,7 +244,7 @@ class CrudApi {
         res.status(204).end();
       });
 
-      await this.app.onDeleteOneRow.trigger(responseData);
+      await this.app.onDeleteOneRow.triggerListeners(responseData);
     };
   }
 }

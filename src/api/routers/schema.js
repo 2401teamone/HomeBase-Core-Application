@@ -80,7 +80,7 @@ class SchemaApi {
         if (responseData.responseSent()) return null;
         res.status(200).json({ table });
       });
-      await this.app.onCreateTable.trigger(responseData);
+      await this.app.onCreateTable.triggerListeners(responseData);
     };
   }
 
@@ -105,7 +105,7 @@ class SchemaApi {
         res.json({ table: newTable });
       });
 
-      await this.app.onUpdateTable.trigger(responseData);
+      await this.app.onUpdateTable.triggerListeners(responseData);
     };
   }
 
@@ -128,7 +128,7 @@ class SchemaApi {
         res.status(204).end();
       });
 
-      await this.app.onDropTable.trigger(responseData);
+      await this.app.onDropTable.triggerListeners(responseData);
     };
   }
 }
