@@ -20,6 +20,7 @@ class DAO {
    */
   _connect(thisDAO) {
     if (!fs.existsSync("pnpd_data")) fs.mkdirSync("pnpd_data");
+    if (!fs.existsSync("pnpd_data/backup")) fs.mkdirSync("pnpd_data/backup");
     if (!fs.existsSync("pnpd_data/migrations")) {
       fs.mkdirSync("pnpd_data/migrations");
     }

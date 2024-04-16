@@ -23,9 +23,7 @@ export default class PinnipedEvent {
         // Invoke the handler function passed in via the add method in index.js
         await handler(responseData);
         this.count--;
-        if (this.count === 0) {
-          this.emitter.emit(`${this.eventName}End`);
-        }
+        this.conditionalEndTrigger();
       } else {
         this.count--;
       }
@@ -34,6 +32,13 @@ export default class PinnipedEvent {
 
   async triggerListeners(responseData) {
     this.count = this.emitter.listenerCount(this.eventName);
+    this.conditionalEndTrigger();
     this.emitter.emit(this.eventName, responseData);
   }
+
+  conditionalEndTrigger = () => {
+    if (this.count === 0) {
+      this.emitter.emit(this.eventName + "End");
+    }
+  };
 }

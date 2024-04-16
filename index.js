@@ -13,56 +13,17 @@ const app = pnpd(serverConfig);
 
 // Extensibility Invocations
 
-// Add custom routes
-app.addRoute("GET", "/seals", (req, res, next) => {});
+// add custom routes
+app.addRoute("GET", "/seals", (req, res, next) => {
+  res.json({ custom: "elephant seals" });
+});
 
 // add event-driven functionality
-app.onGetAllRows.addListener(
-  async (responseData) => {
-    const { req, res, data } = responseData;
-
-    console.log("Triggered Event: 'GET_ALL_ROW' For all tables. Number 1");
-    await new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log("All Tables Async Call Number 1");
-        resolve();
-      }, 1000);
-    });
-
-    data.rows.push({ enrichedStuff: "WOW LOOK AT ME" });
-  },
-  ["users"]
-);
-
 app.onGetOneRow.addListener(
-  async (event) => {
-    // `event` argument contains the Express request and response
-    // along with the relevant row data from the database
-    const { req, res, row } = event;
-
-    const latestSealSightings = await sealSightingsApi(row.id);
-
-    // Conditionally return responses based on application specific logic
-    if (latestSealSightings.length === 0) {
-      res.status(404).json({ message: "No sightings found for this seal." });
-      return;
-    } else {
-      row.latestSightings = latestSealSightings;
-      res.status(200).json(row);
-    }
+  (event) => {
+    console.log("Triggered event: onGetAllRows");
   },
   ["seals"]
 );
-
-// add event-driven functionality
-app.onGetAllRows.addListener(async (event) => {
-  console.log("Triggered Event: GET_ALL_ROWS. Number 2");
-  await new Promise((resolve, reject) => {
-    setTimeout(() => {
-      console.log("All Tables Async Call Number 2");
-      resolve();
-    }, 1500);
-  });
-});
 
 app.start();
