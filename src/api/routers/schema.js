@@ -55,11 +55,12 @@ class SchemaApi {
       allTableMeta = allTableMeta.map((table) => new Table(table));
 
       const responseData = new ResponseData(req, res, { allTableMeta });
-      await this.app.onGetTableMeta().trigger(responseData);
 
-      if (responseData.responseSent()) return null;
-
-      res.json({ tables: allTableMeta });
+      this.app.emitter.on("getTableMetaEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.json({ tables: allTableMeta });
+      });
+      await this.app.onGetTableMeta.triggerListeners(responseData);
     };
   }
 
@@ -75,10 +76,11 @@ class SchemaApi {
       await table.create();
 
       const responseData = new ResponseData(req, res, { table });
-      await this.app.onCreateTable().trigger(responseData);
-
-      if (responseData.responseSent()) return null;
-      res.status(200).json({ table });
+      this.app.emitter.on("createTableEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(200).json({ table });
+      });
+      await this.app.onCreateTable.triggerListeners(responseData);
     };
   }
 
@@ -97,10 +99,13 @@ class SchemaApi {
       await oldTable.updateTo(newTable);
 
       const responseData = new ResponseData(req, res, { oldTable, newTable });
-      await this.app.onUpdateTable().trigger(responseData);
-      if (responseData.responseSent()) return null;
 
-      res.json({ table: newTable });
+      this.app.emitter.on("updateTableEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.json({ table: newTable });
+      });
+
+      await this.app.onUpdateTable.triggerListeners(responseData);
     };
   }
 
@@ -117,10 +122,13 @@ class SchemaApi {
       await tableToDelete.drop();
 
       const responseData = new ResponseData(req, res, { tableToDelete });
-      await this.app.onDropTable().trigger(responseData);
 
-      if (responseData.responseSent()) return null;
-      res.status(204).end();
+      this.app.emitter.on("dropTableEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(204).end();
+      });
+
+      await this.app.onDropTable.triggerListeners(responseData);
     };
   }
 }

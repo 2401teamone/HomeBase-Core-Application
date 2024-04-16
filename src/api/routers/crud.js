@@ -1,6 +1,6 @@
 import { Router } from "express";
 import loadTableContext from "../middleware/load_table_context.js";
-import apiRules from "../middleware/api_rules.js";
+import authCheck from "../middleware/auth_check.js";
 import {
   validatePostMeetsRequiredFields,
   validatePatchMeetsRequiredFields,
@@ -31,19 +31,19 @@ export default function generateCrudRouter(app) {
   router.get(
     BASE,
     loadTableContext(app),
-    apiRules(app),
+    authCheck(app),
     catchError(crudApi.getAllHandler())
   );
   router.get(
     `${BASE}/:rowId`,
     loadTableContext(app),
-    apiRules(app),
+    authCheck(app),
     catchError(crudApi.getOneHandler())
   );
   router.post(
     BASE,
     loadTableContext(app),
-    apiRules(app),
+    authCheck(app),
     validatePostMeetsRequiredFields(),
     validateRequestMeetsCustomValidation(),
     validateRequestMeetsUniqueValidation(app),
@@ -53,7 +53,7 @@ export default function generateCrudRouter(app) {
   router.patch(
     `${BASE}/:rowId`,
     loadTableContext(app),
-    apiRules(app),
+    authCheck(app),
     validatePatchMeetsRequiredFields(),
     validateRequestMeetsCustomValidation(),
     validateRequestMeetsUniqueValidation(app),
@@ -63,7 +63,7 @@ export default function generateCrudRouter(app) {
   router.delete(
     `${BASE}/:rowId`,
     loadTableContext(app),
-    apiRules(app),
+    authCheck(app),
     catchError(crudApi.deleteOneHandler())
   );
 
@@ -101,13 +101,15 @@ class CrudApi {
 
       const responseData = new ResponseData(req, res, { table, rows });
 
-      // Fire the onGetAllRows event
-      await this.app.onGetAllRows().trigger(responseData);
+      // Get the pnpd_event object for this event
+      //
+      this.app.emitter.on("getAllRowsEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(200).json(responseData.formatAllResponse());
+      });
 
-      // If a registered event handler sends a response to the client, early return.
-      if (responseData.responseSent()) return null;
-
-      res.status(200).json(responseData.formatAllResponse());
+      // Trigger all "GET_ALL_ROWS" events
+      this.app.onGetAllRows.triggerListeners(responseData);
     };
   }
 
@@ -133,11 +135,14 @@ class CrudApi {
 
       const responseData = new ResponseData(req, res, { table, rows: row });
 
-      await this.app.onGetOneRow().trigger(responseData);
+      // Once all "getOneRow" events have finished execution, the "getOneRowEnd" event fires.
+      this.app.emitter.on("getOneRowEnd", () => {
+        // If an event sends a response to the client, we won't try to resend it.
+        if (responseData.responseSent()) return null;
+        res.status(200).json(responseData.formatOneResponse());
+      });
 
-      if (responseData.responseSent()) return null;
-
-      res.status(200).json(responseData.formatOneResponse());
+      this.app.onGetOneRow.triggerListeners(responseData);
     };
   }
 
@@ -165,11 +170,12 @@ class CrudApi {
         rows: createdRow,
       });
 
-      await this.app.onCreateOneRow().trigger(responseData);
+      this.app.emitter.on("createOneRowEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(201).json(responseData.formatOneResponse());
+      });
 
-      if (responseData.responseSent()) return null;
-
-      res.status(201).json(responseData.formatOneResponse());
+      await this.app.onCreateOneRow.triggerListeners(responseData);
     };
   }
 
@@ -202,10 +208,12 @@ class CrudApi {
         rows: updatedRow,
       });
 
-      await this.app.onUpdateOneRow().trigger(responseData);
-      if (responseData.responseSent()) return null;
+      this.app.emitter.on("updateOneRowEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(200).json(responseData.formatOneResponse());
+      });
 
-      res.status(200).json(responseData.formatOneResponse());
+      await this.app.onUpdateOneRow.triggerListeners(responseData);
     };
   }
 
@@ -230,11 +238,13 @@ class CrudApi {
       await this.app.getDAO().deleteOne(table.name, rowId);
 
       const responseData = new ResponseData(req, res, { table, rows: row });
-      await this.app.onDeleteOneRow().trigger(responseData);
 
-      if (responseData.responseSent()) return null;
+      this.app.emitter.on("deleteOneRowEnd", () => {
+        if (responseData.responseSent()) return null;
+        res.status(204).end();
+      });
 
-      res.status(204).end();
+      await this.app.onDeleteOneRow.triggerListeners(responseData);
     };
   }
 }

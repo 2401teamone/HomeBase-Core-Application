@@ -23,7 +23,7 @@ const API_RULE_KEY = {
  * error if needed
  * @returns {function} middleware
  */
-export default function apiRules() {
+export default function authCheck() {
   return catchError(async (req, res, next) => {
     //Find out what action the user is trying to complete, and associate that with
     //the appropriate API rule.
