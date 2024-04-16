@@ -18,7 +18,7 @@ export default function generateSchemaRouter(app) {
   const router = Router();
   const schemaApi = new SchemaApi(app);
 
-  // router.use(adminOnly());
+  router.use(adminOnly());
   router.get("/", catchError(schemaApi.getAllTablesHandler()));
   router.post("/", catchError(schemaApi.createTableHandler()));
   router.put(
