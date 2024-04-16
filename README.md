@@ -10,7 +10,7 @@ Pinniped is an open-source, JavaScript backend-as-a-service application that off
 * [Documentation](https://github.com/Pinniped-BaaS/pinniped/tree/readme?tab=readme-ov-file#documentation)
 
 ## How to Use
-Before starting, check if you meet the requirements [here](https://github.com/Pinniped-BaaS).
+Before starting, check if you meet the requirements [here](https://github.com/pinniped-baas).
 
 Install the dependency
 ```javascript 
