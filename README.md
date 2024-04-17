@@ -124,9 +124,10 @@ app.onCreateOneRow.addListener(() => {
   console.log("Triggered Event: createOneRow");
 }, ["seals", "pinnipeds", "users"]);
 ```
-The handler can also be asynchronous.
+`addListener` can work asynchronously.
 ```javascript
-app.onLoginUser(async () => {
+// Adds a listener on the event: "loginUser".
+app.onLoginUser.addListener(async () => {
   setTimeout(() => {
     sendUserWelcomeEmail();
   }, 5000);
