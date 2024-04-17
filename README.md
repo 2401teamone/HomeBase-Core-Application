@@ -118,8 +118,23 @@ You can add several tables or omit the tables to run anytime the event is trigge
 app.onCreateOneRow.addListener(() => {
   console.log("Triggered Event: createOneRow");
 });
+
+// Or the handler can be executed on specific tables.
+app.onCreateOneRow.addListener(() => {
+  console.log("Triggered Event: createOneRow");
+}, ["seals", "pinnipeds", "users"]);
 ```
+The handler can also be asynchronous.
+```javascript
+app.onLoginUser(async () => {
+  setTimeout(() => {
+    sendUserWelcomeEmail();
+  }, 5000);
+});
+```
+
 Here are all the possible properties of the Pinniped instance, relating to the event type.
+
 CRUD Operation Events
 * onGetAllRows
 * onGetOneRow
