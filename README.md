@@ -99,120 +99,49 @@ app.addRoute("GET", "/custom/:msg", (c) => {
 });
 });
 ```
-### onGetOneRow ( ... tables)
-`onGetOneRow` returns a new `PinnipedEvent` that can `add` a handler or `trigger` the event.
-The tables in the database can be specified to invoke the handler on this event, getting a single row.
-To have it run on any table, leave the parameter empty. 
+### addListener (handler, tables)
+`addListener` mounts a handler function that executes when Pinniped's custom events are triggered. 
+You can specify the table(s) you'd like to listen for.
+`addListener` is a method on the event type, in which the event type is a property of Pinniped.
+For example:
 ```javascript
-app.onGetOneRow().add(() => {
-  console.log("onGetOneRow triggered on any tables"
+// Adds a listener on the event: "getOneRow".
+// The handler is executed when the event, "getOneRow", is triggered on table "seals".
+app.onGetOneRow.addListener(() => {
+  console.log("Triggered Event: getOneRow");
+}, ["seals"]);
+```
+You can add several tables or omit the tables to run anytime the event is triggered.
+```javascript
+// Adds a listener on the event: "createOneRow".
+// The handler is executed when the event, "createOneRow", is triggered on any table.
+app.onCreateOneRow.addListener(() => {
+  console.log("Triggered Event: createOneRow");
 });
+```
+Here are all the possible properties of the Pinniped instance, relating to the event type.
+CRUD Operation Events
+* onGetAllRows
+* onGetOneRow
+* onCreateOneRow
+* onUpdateOneRow
+* onDeleteOneRow
 
-app.onGetOneRow("seals").add(() => {
-  console.log("onGetOneRow triggered on 'seals' table");
-});
+Managing Users and Database Events
+* onBackupDatabase
+* onRegisterUser
+* onRegisterAdmin
+* onLoginUser
+* onLoginAdmin
+* onLogout
 
-app.onGetOneRow("seals", "dolphins").add(() => {
-  console.log("onGetOneRow triggered on 'seals' and 'dolphin' tables");
-});
+Custom Route Event
+* onCustomRoute
 
-// Trigger the Event Artificially
-app.onGetOneRow().trigger();
-```
-### onGetAllRows ( ... tables)
-Functions similarly to `onGetOneRow` except in the event where all rows are grabbed.
-```javascript
-app.onGetAllRows().add(() => {
-  console.log("onGetAllRows triggered on any table");
-});
-```
-### onCreateOneRow ( ... tables)
-Functions similarly to `onGetOneRow` except in the event where a row is created.
-```javascript
-app.onCreateOneRow().add(() => {
-  console.log("onCreateOneRow triggered on any table");
-});
-```
+DDL Operation Events
+* onGetTableMeta
+* onCreateTable
+* onUpdateTable
+* onDropTable
 
-### onUpdateOneRow ( ... tables)
-Functions similarly to `onGetOneRow` except in the event where a row is updated.
-```javascript
-app.onUpdateOneRow().add(() => {
-  console.log("onUpdateOneRow triggered on any table");
-});
-```
-### onDeleteOneRow ( ... tables)
-Functions similarly to `onGetOneRow` except in the event where a row is deleted.
-```javascript
-app.onDeleteOneRow().add(() => {
-  console.log("onDeleteOneRow triggered on all tables");
-});
-```
-### onBackupDatabase
-Can add handlers in the event that the database is backed up.
-```javascript
-app.onBackupDatabase().add(() => {
-  console.log("Database backed up");
-});
-```
-### onRegisterUser
-```javascript
-app.onRegisterUser().add(() => {
-  console.log("User is registered");
-  sendUserWelcomeEmail();
-});
-```
-### onRegisterAdmin
-```javascript
-app.onRegisterAdmin().add(() => {
-  console.log("Admin is registered");
-});
-```
-### onLoginUser
-```javascript
-app.onLoginUser().add(() => {
-  console.log("User logged in");
-});
-```
-### onLoginAdmin
-```javascript
-app.onLoginAdmin().add(() => {
-  console.log("Admin logged in");
-});
-```
-### onLogout
-```javascript
-app.onLogout().add(() => {
-  console.log("Logged out");
-});
-```
-### onCustomRoute
-```javascript
-app.onCustomRoute().add(() => {
-  console.log("Custom route is hit with a request");
-});
-```
-### onGetTableMeta
-```javascript
-app.onGetTableMeta().add(() => {
-  console.log("Get 'tablemeta'");
-});
-```
-### onCreateTable
-```javascript
-app.onCreateTable().add(() => {
-  console.log("Table created");
-});
-```
-### onUpdateTable
-```javascript
-app.onUpdateTable().add(() => {
-  console.log("Table updated");
-});
-```
-### onDropTable
-```javascript
-app.onDropTable().add(() => {
-  console.log("Table dropped");
-});
-```
+
