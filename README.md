@@ -26,17 +26,21 @@ app.start(serverConfig);
 // Or ECMAScript
 import { pnpd } from 'pinniped'
 const app = pnpd();
-app.start();
+app.start(serverConfig);
 ```
 Or install the CLI and create a project
 1. Run `npm install pinniped-cli -g`
 2. Run `pinniped create`
 
 ## Documentation
+
+## Server Config
+If your Pinniped project was built with `pinniped-cli`, then the project's `.env` file will contain supported configuration settings.
+
 ### start (serverConfig)
-Optionally, the Pinniped instance accepts an object that contains the server configuration.
+The Pinniped instance accepts an object that contains the server configuration.
 There are configurations to change how the Express server runs. By default, these values are expected to be in a `.env` file. 
-However, you can change the source for the server-specific configurations where Pinniped is instantiated.
+However, you can change the source for the server-specific configurations by passing in your own object when `start` is invoked.
 ```javascript
 let serverConfig = {
   port: process.env.SERVER_PORT,
@@ -47,12 +51,10 @@ let serverConfig = {
 
 app.start(serverConfig);
 ```
-## Server Config
-If your Pinniped-powered project was built with `pinniped-cli`, then the project's `.env` file will contain supported configuration settings.
 
 ### SERVER_DOMAIN 
-The base domain name for requesting a TLS certificate from Let's Encrypt. If `SERVER_DOMAIN` has a value, it'll auto-cert the domain.
-If this is undefined the server will run on `SERVER_PORT`. Otherwise, if it's present and the auto-cert runs, the `SERVER_PORT` value is ignored and the server will run on port 443 with a redirect server (running on port 80) that redirects to port 443. 
+The base domain name for requesting a TLS certificate from Let's Encrypt. If `SERVER_DOMAIN` has a value, it will attempt to auto-cert the domain.
+If this is undefined the server will run on `SERVER_PORT`. If `SERVER_DOMAIN` is present and the auto-cert runs, the `SERVER_PORT` value is ignored and the server will run on port 443 with a redirect server (running on port 80) that points to port 443. 
 ```javascript
 SERVER_DOMAIN=example.com
 ```
@@ -64,7 +66,7 @@ SERVER_ALTNAMES=www.example.com,www.example.net
 ```
 
 ### SERVER_DIRECTORY 
-This tells the server to try to obtain a staging certificate or a production certificate. By default, it'll get a staging certificate. Once you verify that you can get the staging certificate you can change this value to `production`. 
+This specifies whether to try to obtain a staging certificate or a production certificate from Let's Encrypt. By default, it will get a staging certificate. Once you verify that you can get the staging certificate you can change this value to `production`. 
 ```javascript
 SERVER_DIRECTORY=production
 ```
@@ -83,7 +85,17 @@ CORS_WHITELIST=www.example.com,/regexvalue/,www.example2.com
 Used by the server to encrypt session information. If left blank the server will automatically generate one and save it here.
 
 ## Custom Routes and Event Handlers
-If the project was created using `pinniped-cli`, it's recommended to write these methods in the project's `index.js`.
+To extend Pinniped's base functionality, you can add custom routes or use Pinniped's custom events to add an event listener and run a callback. This extension code is added to the `pinniped` app instance before `app.start()` is called.
+```javascript
+import { pnpd } from 'pinniped'
+const app = pnpd();
+
+app.addRoute("GET", "/store", () => {
+  console.log("GET request received at /store");
+});
+
+app.start(serverConfig);
+```
 
 ### addRoute (method, path, handler)
 `addRoute` mounts the parameter, path, onto the host's path. Once it receives
@@ -91,12 +103,12 @@ the specified HTTP request method at that path, it'll invoke the handler passed 
 ```javascript
 app.addRoute("GET", "/store", () => {
   console.log("GET request received at /store");
+});
 
 // The route can accept parameters
 app.addRoute("GET", "/custom/:msg", (c) => {
   const msg = c.pathParam('msg');
   return c.json(200, { message: `My custom endpoint ${msg}` });
-});
 });
 ```
 ### addListener (handler, tables)
