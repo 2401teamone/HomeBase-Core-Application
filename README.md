@@ -113,13 +113,15 @@ app.addRoute("GET", "/custom/:msg", (c) => {
 ```
 ### addListener (handler, tables)
 `addListener` takes a handler function that executes when Pinniped's custom events are triggered. 
-You can specify the table(s) you'd like to listen for if the event type deals with tables.
+As the second argument, You can specify an array of table names for which you'd like to apply the callback to. If no tables are passed, the callback will be invoked for every table.
+
+The handler function has access to the Express `req` and `res` objects, as well as an additonal `data` object that has information relevant to the event. Depending on what event is trigger, the `data` object will contain different properties. As an example this is the data object for `onGetOneRow`
 
 For example:
 ```javascript
 // Adds a listener on the event: "getOneRow".
 // The handler is executed when the event, "getOneRow", is triggered on table "seals".
-app.onGetOneRow.addListener(() => {
+app.onGetOneRow.addListener((req, res, data) => {
   console.log("Triggered Event: getOneRow");
 }, ["seals"]);
 ```
@@ -127,12 +129,12 @@ You can add several tables or omit the tables to run anytime the event is trigge
 ```javascript
 // Adds a listener on the event: "createOneRow".
 // The handler is executed when the event, "createOneRow", is triggered on any table.
-app.onCreateOneRow.addListener(() => {
+app.onCreateOneRow.addListener((req, res, data) => {
   console.log("Triggered Event: createOneRow");
 });
 
 // Or the handler can be executed on specific tables.
-app.onCreateOneRow.addListener(() => {
+app.onCreateOneRow.addListener((req, res, data) => {
   console.log("Triggered Event: createOneRow");
 }, ["seals", "pinnipeds", "users"]);
 ```
@@ -142,14 +144,14 @@ app.onCreateOneRow.addListener(() => {
 
 ```javascript
 // Adds a listener on the event: "loginUser".
-app.onLoginUser.addListener(async () => {
-  setTimeout(() => {
+app.onLoginUser.addListener(async (req, res, data) => {
+  await setTimeout(() => {
     sendUserWelcomeEmail();
-  }, 5000);
+  }, 3000);
 });
 ```
 
-Here are all the possible properties of the Pinniped instance, relating to the event type.
+Here are all the the events that Pinniped fires that you can add listeners for:
 
 CRUD Operation Events (these take the optional `table` argument)
 * onGetAllRows
