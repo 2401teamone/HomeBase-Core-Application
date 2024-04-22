@@ -115,36 +115,64 @@ app.addRoute("GET", "/custom/:msg", (c) => {
 `addListener` takes a handler function that executes when Pinniped's custom events are triggered. 
 As the second argument, You can specify an array of table names for which you'd like to apply the callback to. If no tables are passed, the callback will be invoked for every table.
 
-The handler function has access to the Express `req` and `res` objects, as well as an additonal `data` object that has information relevant to the event. Depending on what event is trigger, the `data` object will contain different properties. As an example this is the data object for `onGetOneRow`
+The handler function has access to the Express `req` and `res` objects, as well as an additonal `data` object that has information relevant to the event. These are passed to the callback as a single object that can be destructured for convenience as in the examples below. Depending on what event is trigger, the `data` object will contain different properties. 
 
-For example:
+The route that triggered the event will not return a response to the client until all of the event callbacks have run, this allows you to enrich the data object, or early return the response from the callback. The route will not attempt to return a response if the response has been sent from a callback.
+
+An example of the data object for `onGetAllRows`: 
+```javascript
+{
+  table: Table {
+    id: 'c45524681238c0',
+    type: 'base',
+    name: 'seals',
+    columns: [ [Column] ],
+    getAllRule: 'admin',
+    getOneRule: 'admin',
+    createRule: 'admin',
+    deleteRule: 'admin',
+    updateRule: 'admin',
+    options: {}
+  },
+  rows: [
+    {
+      id: 'da0157aebacc9b',
+      created_at: '2024-04-22 17:50:36',
+      updated_at: '2024-04-22 17:50:36',
+      name: 'Gary'
+    }
+  ]
+}
+```
+
+An example that will only run the callback if the table name is `seals`:
 ```javascript
 // Adds a listener on the event: "getOneRow".
 // The handler is executed when the event, "getOneRow", is triggered on table "seals".
-app.onGetOneRow.addListener((req, res, data) => {
+app.onGetOneRow.addListener(({req, res, data}) => {
   console.log("Triggered Event: getOneRow");
 }, ["seals"]);
 ```
-You can add several tables or omit the tables to run anytime the event is triggered.
+You can add several tables, or omit the tables array to run anytime the event is triggered.
 ```javascript
 // Adds a listener on the event: "createOneRow".
 // The handler is executed when the event, "createOneRow", is triggered on any table.
-app.onCreateOneRow.addListener((req, res, data) => {
+app.onCreateOneRow.addListener(({req, res, data}) => {
   console.log("Triggered Event: createOneRow");
 });
 
 // Or the handler can be executed on specific tables.
-app.onCreateOneRow.addListener((req, res, data) => {
+app.onCreateOneRow.addListener(({req, res, data}) => {
   console.log("Triggered Event: createOneRow");
 }, ["seals", "pinnipeds", "users"]);
 ```
 
-`addListener` can work asynchronously. **Note:** The route that triggered the event will not return a http response to the client until all callbacks return. This means if you `await` something in a async callback the response will be delayed. This allows you to use the async callback to enrich the response object, use with caution.
+`addListener` can work asynchronously. **Note:** The route that triggered the event will not return a http response to the client until all callbacks return. This means if you `await` something in a async callback the response will be delayed. This allows you to use the async callback to enrich the response object, but could unintentionally delay a response to the client.
 
 
 ```javascript
 // Adds a listener on the event: "loginUser".
-app.onLoginUser.addListener(async (req, res, data) => {
+app.onLoginUser.addListener(async ({req, res, data}) => {
   await setTimeout(() => {
     sendUserWelcomeEmail();
   }, 3000);
