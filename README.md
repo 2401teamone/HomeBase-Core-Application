@@ -112,9 +112,9 @@ app.addRoute("GET", "/custom/:msg", (c) => {
 });
 ```
 ### addListener (handler, tables)
-`addListener` mounts a handler function that executes when Pinniped's custom events are triggered. 
-You can specify the table(s) you'd like to listen for.
-`addListener` is a method on the event type, in which the event type is a property of Pinniped.
+`addListener` takes a handler function that executes when Pinniped's custom events are triggered. 
+You can specify the table(s) you'd like to listen for if the event type deals with tables.
+
 For example:
 ```javascript
 // Adds a listener on the event: "getOneRow".
@@ -136,7 +136,10 @@ app.onCreateOneRow.addListener(() => {
   console.log("Triggered Event: createOneRow");
 }, ["seals", "pinnipeds", "users"]);
 ```
-`addListener` can work asynchronously.
+
+`addListener` can work asynchronously. **Note:** The route that triggered the event will not return a http response to the client until all callbacks return. This means if you `await` something in a async callback the response will be delayed. This allows you to use the async callback to enrich the response object, use with caution.
+
+
 ```javascript
 // Adds a listener on the event: "loginUser".
 app.onLoginUser.addListener(async () => {
@@ -148,7 +151,7 @@ app.onLoginUser.addListener(async () => {
 
 Here are all the possible properties of the Pinniped instance, relating to the event type.
 
-CRUD Operation Events
+CRUD Operation Events (these take the optional `table` argument)
 * onGetAllRows
 * onGetOneRow
 * onCreateOneRow
