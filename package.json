@@ -1,6 +1,6 @@
 {
   "name": "pinniped",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Easy-to-deploy Node backend server.",
   "keywords": [
     "backend",
@@ -34,7 +34,7 @@
     },
     {
       "name": "Josh Lakenan",
-      "email": "joshlakenan@gmail.com"
+      "email": "joshualakenan@gmail.com"
     },
     {
       "name": "Trevor Rees-Jones",
