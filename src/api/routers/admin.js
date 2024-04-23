@@ -79,7 +79,7 @@ class AdminAPI {
 
       const responseData = new ResponseData(req, res, { backupFileName });
 
-      this.app.emitter.on("backupDatabaseEnd", () => {
+      this.app.emitter.once("backupDatabaseEnd", () => {
         if (responseData.responseSent()) return null;
         res.status(200).json(responseData.formatGeneralResponse());
       });

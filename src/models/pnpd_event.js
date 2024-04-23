@@ -23,10 +23,10 @@ export default class PinnipedEvent {
         // Invoke the handler function passed in via the add method in index.js
         await handler(responseData);
         this.count--;
-        this.conditionalEndTrigger();
       } else {
         this.count--;
       }
+      this.conditionalEndTrigger();
     });
   };
 

@@ -97,7 +97,7 @@ class AuthApi {
 
       const responseData = new ResponseData(req, res, createdUser);
 
-      this.app.emitter.on("RegisterUserEnd", () => {
+      this.app.emitter.once("RegisterUserEnd", () => {
         if (responseData.responseSent()) return null;
         res.status(201).json(responseData.formatGeneralResponse());
       });
@@ -190,7 +190,7 @@ class AuthApi {
         user: createdAdmin[0].username,
       });
 
-      this.app.emitter.on("registerAdminEnd", () => {
+      this.app.emitter.once("registerAdminEnd", () => {
         if (responseData.responseSent()) return null;
         res.status(201).json(responseData.formatGeneralResponse());
       });
@@ -226,7 +226,7 @@ class AuthApi {
         user: req.session.user,
       });
 
-      this.app.emitter.on("loginUserEnd", () => {
+      this.app.emitter.once("loginUserEnd", () => {
         if (responseData.responseSent()) return null;
         res.status(200).send(responseData.formatGeneralResponse());
       });
@@ -259,7 +259,7 @@ class AuthApi {
       const responseData = new ResponseData(req, res, {
         user: req.session.user,
       });
-      this.app.emitter.on("loginAdminEnd", () => {
+      this.app.emitter.once("loginAdminEnd", () => {
         if (responseData.responseSent()) return null;
         res.status(200).send(responseData.formatGeneralResponse());
       });
@@ -276,7 +276,7 @@ class AuthApi {
     return async (req, res, next) => {
       const responseData = new ResponseData(req, res, "User Logged Out");
 
-      this.app.emitter.on("logoutEnd", () => {
+      this.app.emitter.once("logoutEnd", () => {
         if (responseData.responseSent()) return null;
         delete req.session.user;
         res.status(200).json(responseData.formatGeneralResponse());

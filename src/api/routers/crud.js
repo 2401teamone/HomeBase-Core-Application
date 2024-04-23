@@ -103,7 +103,7 @@ class CrudApi {
 
       // Get the pnpd_event object for this event
       //
-      this.app.emitter.on("getAllRowsEnd", () => {
+      this.app.emitter.once("getAllRowsEnd", () => {
         if (responseData.responseSent()) return null;
         res.status(200).json(responseData.formatAllResponse());
       });
@@ -136,7 +136,7 @@ class CrudApi {
       const responseData = new ResponseData(req, res, { table, rows: row });
 
       // Once all "getOneRow" events have finished execution, the "getOneRowEnd" event fires.
-      this.app.emitter.on("getOneRowEnd", () => {
+      this.app.emitter.once("getOneRowEnd", () => {
         // If an event sends a response to the client, we won't try to resend it.
         if (responseData.responseSent()) return null;
         res.status(200).json(responseData.formatOneResponse());
@@ -170,7 +170,7 @@ class CrudApi {
         rows: createdRow,
       });
 
-      this.app.emitter.on("createOneRowEnd", () => {
+      this.app.emitter.once("createOneRowEnd", () => {
         if (responseData.responseSent()) return null;
         res.status(201).json(responseData.formatOneResponse());
       });
@@ -208,7 +208,7 @@ class CrudApi {
         rows: updatedRow,
       });
 
-      this.app.emitter.on("updateOneRowEnd", () => {
+      this.app.emitter.once("updateOneRowEnd", () => {
         if (responseData.responseSent()) return null;
         res.status(200).json(responseData.formatOneResponse());
       });
@@ -239,7 +239,7 @@ class CrudApi {
 
       const responseData = new ResponseData(req, res, { table, rows: row });
 
-      this.app.emitter.on("deleteOneRowEnd", () => {
+      this.app.emitter.once("deleteOneRowEnd", () => {
         if (responseData.responseSent()) return null;
         res.status(204).end();
       });
