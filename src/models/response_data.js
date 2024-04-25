@@ -19,6 +19,7 @@ export default class ResponseData {
 
   formatAllResponse() {
     return {
+      ...this.data,
       table: {
         id: this.data.table.id,
         name: this.data.table.name,
@@ -29,6 +30,7 @@ export default class ResponseData {
 
   formatOneResponse() {
     return {
+      ...this.data,
       table: {
         id: this.data.table.id,
         name: this.data.table.name,

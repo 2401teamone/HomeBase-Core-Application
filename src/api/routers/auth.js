@@ -97,7 +97,7 @@ class AuthApi {
 
       const responseData = new ResponseData(req, res, createdUser);
 
-      this.app.emitter.once("RegisterUserEnd", () => {
+      this.app.emitter.once("registerUserEnd", () => {
         if (responseData.responseSent()) return null;
         res.status(201).json(responseData.formatGeneralResponse());
       });
