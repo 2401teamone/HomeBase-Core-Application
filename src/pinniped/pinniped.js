@@ -31,7 +31,7 @@ class Pinniped {
   async dataBaseSetup() {
     await this.runLatestMigrations();
     await this.seedDatabase();
-    await this.logger.createTable();
+    // await this.logger.createTable();
   }
   /**
    * Seeds the database with the necessary tables.

@@ -2,6 +2,7 @@ import express from "express";
 import "dotenv/config";
 import fs from "fs";
 import pinoHttp from "pino-http";
+import pino from "pino";
 import { resolve } from "path";
 
 //Routers
@@ -17,6 +18,7 @@ import sanitize from "./middleware/sanitize.js";
 import helmet from "helmet";
 import cors from "cors";
 import sessionConfig from "./middleware/session_config.js";
+import generateRandomUUID from "../utils/generate_uuid.js";
 
 function initApi(app) {
   const server = express();
@@ -39,7 +41,33 @@ function initApi(app) {
 
   server.use(sessionConfig());
 
-  server.use(pinoHttp({ stream: app.logger.sqliteStream() }));
+  const logger = pino.destination({
+    dest: "./pnpd_data/server.logs",
+    // minLength: 4096,
+  });
+
+  server.use(
+    pinoHttp({
+      serializers: {
+        req(req) {
+          return {
+            id: req.id,
+            method: req.method,
+            url: req.url,
+            headers: req.headers,
+          };
+        },
+        res(res) {
+          return {
+            statusCode: res.statusCode,
+          };
+        },
+      },
+      genReqId: generateRandomUUID,
+      stream: logger,
+    })
+  );
+
   server.use(sanitize());
 
   server.use(helmet());
