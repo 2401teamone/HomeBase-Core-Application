@@ -21,7 +21,7 @@ app.addRoute("GET", "/seals", (req, res, next) => {
 // add event-driven functionality
 app.onGetOneRow.addListener(
   (event) => {
-    console.log("Triggered event: onGetAllRows");
+    console.log("Triggered event: onGetOneRow");
   },
   ["seals"]
 );

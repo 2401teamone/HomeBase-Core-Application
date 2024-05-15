@@ -12,3 +12,4 @@ pnpd.db-wal
 session.db
 migrations
 package-lock.json
+server.logs
