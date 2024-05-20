@@ -3,7 +3,7 @@ import DAO from "../dao/dao.js";
 import LogDao from "../dao/log_dao.js";
 import EventEmitter from "events";
 import registerProcessListeners from "../utils/register_process_listeners.js";
-import { InvalidCustomRouteError } from "../utils/errors.js";
+import { InvalidCustomRouteError, TableNotFoundError } from "../utils/errors.js";
 import Table from "../models/table.js";
 import PinnipedEvent from "../models/pnpd_event.js";
 import Server from "./server.js";
@@ -26,6 +26,16 @@ class Pinniped {
     this.customRoutes = [];
     this.dataBaseSetup();
     this.initEvents();
+    this.tableContext = {};
+  }
+
+  async updateTableContext(tableName) {
+    let foundTable = await this.DAO.findTableByNameOrId(tableName);
+    if (!foundTable.length) throw new TableNotFoundError(tableName);
+    foundTable = foundTable[0];
+
+    const tableContext = new Table(foundTable);
+    this.tableContext[tableName] = tableContext;
   }
 
   async dataBaseSetup() {
