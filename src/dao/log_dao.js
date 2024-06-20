@@ -1,5 +1,5 @@
-import knex from "knex";
-import generateRandomUuid from "../utils/generate_uuid.js";
+// import knex from "knex";
+// import generateRandomUuid from "../utils/generate_uuid.js";
 import fs from "fs";
 
 /**
@@ -68,7 +68,12 @@ class LogDao {
   // }
 
   async deleteLog(id) {
-    await this.db("logs").where({ id }).del();
+    console.log(id);
+    const data = fs.readFileSync("./pnpd_data/server.logs", "utf-8");
+    let lines = data.split("\n");
+    const logIndex = lines.findIndex((log) => log.includes(id));
+    lines.splice(logIndex, 1);
+    fs.writeFileSync("./pnpd_data/server.logs", lines.join("\n"));
   }
 
   /**
