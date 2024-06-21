@@ -43,7 +43,6 @@ function initApi(app) {
 
   const logger = pino.destination({
     dest: "./pnpd_data/server.logs",
-    // minLength: 4096,
   });
 
   server.use(
