@@ -14,13 +14,11 @@ export default function loadTableContext(app) {
     const { table } = req.params;
     if (!table) throw new BadRequestError("Table Name or ID is required.");
 
-    let foundTable = await app.getDAO().findTableByNameOrId(table);
-    if (!foundTable.length) throw new TableNotFoundError(table);
-    foundTable = foundTable[0];
+    if (!app.tableContext[table]) {
+      await app.updateTableContext(table)
+    }
 
-    const tableContext = new Table(foundTable);
-
-    res.locals.table = tableContext;
+    res.locals.table = app.tableContext[table];
     next();
   });
 }
